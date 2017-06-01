@@ -33,6 +33,11 @@ import java.util.Locale;
  * @author Juergen Hoeller
  * @see org.springframework.context.support.ResourceBundleMessageSource
  * @see org.springframework.context.support.ReloadableResourceBundleMessageSource
+ * ApplicationContext被加载的时候，会自动查找在Context中定义的的MessageSource Bean，这个bean名字必须是messageSource
+ * 如果找到了这样的Bean，就会调用getMessage方法获取信息，如果没找到，就回去查找父亲是否包含这个名字的bean，找到了就会把找到的bean当做MessageSource
+ * 没找到就会实例化一个StaticMessageSource
+ *
+ * 有三个实现ResourceBundleMessageSource和StaticMessageSource和ReloadableResourceBundleMessageSource
  */
 public interface MessageSource {
 
@@ -43,12 +48,13 @@ public interface MessageSource {
 	 * qualified class name, thus avoiding conflict and ensuring maximum clarity.
 	 * @param args array of arguments that will be filled in for params within
 	 * the message (params look like "{0}", "{1,date}", "{2,time}" within a message),
-	 * or null if none.
+	 * or null if none. 代替信息中的占位符
 	 * @param locale the Locale in which to do the lookup
 	 * @param defaultMessage String to return if the lookup fails
 	 * @return the resolved message if the lookup was successful;
 	 * otherwise the default message passed as a parameter
 	 * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/text/MessageFormat.html">java.text.MessageFormat</a>
+	 * 从MessageSource中获取信息，如果指定的locale没找到信息，使用默认信息。
 	 */
 	String getMessage(String code, Object[] args, String defaultMessage, Locale locale);
 
@@ -62,6 +68,7 @@ public interface MessageSource {
 	 * @return the resolved message
 	 * @throws NoSuchMessageException if the message wasn't found
 	 * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/text/MessageFormat.html">java.text.MessageFormat</a>
+	 * 获取信息，但是这个没有默认值，如果信息找不到，就抛出一个一场
 	 */
 	String getMessage(String code, Object[] args, Locale locale) throws NoSuchMessageException;
 
