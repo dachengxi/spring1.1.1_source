@@ -48,7 +48,14 @@ import org.springframework.core.io.ResourceLoader;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @see ApplicationContextAware#setApplicationContext
- * 建立在BeanFactory之上，增加了其他功能，如消息资源处理，事件传递等
+ * 建立在BeanFactory之上，增加了其他功能，如消息资源处理，事件传递，资源访问等
+ * 相对于BeanFactory，优先使用ApplicationContext
+ *
+ * 继承MessageSource接口，提供了messaging功能（i18n或者国际化）
+ *
+ * 事件传递是通过ApplicationEvent和ApplicationListener来提供的
+ * 如果上下文中有实现了ApplicationListener接口的bean，每当有ApplicationEvent发布到ApplicationContext中，那个bean就会被通知
+ *
  */
 public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory,
 		MessageSource, ApplicationEventPublisher, ResourceLoader {
@@ -78,6 +85,7 @@ public interface ApplicationContext extends ListableBeanFactory, HierarchicalBea
 	 * or application-specific events.
 	 * @param event event to publish
 	 * @see org.springframework.web.context.support.RequestHandledEvent
+	 * 发布事件，也可以实现自定义事件，然后使用此方法来发布
 	 */
 	void publishEvent(ApplicationEvent event);
 

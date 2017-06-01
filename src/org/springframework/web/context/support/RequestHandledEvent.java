@@ -26,6 +26,8 @@ import org.springframework.context.ApplicationEvent;
  * @author Juergen Hoeller
  * @since January 17, 2001
  * @see org.springframework.web.servlet.FrameworkServlet
+ * 与web相关，告诉所有的bean，一个http请求已经被响应，这个事件会在请求结束后被发送。
+ * 只能用在使用了Spring的DispatcherServlet的web应用
  */
 public class RequestHandledEvent extends ApplicationEvent {
 

@@ -23,6 +23,8 @@ import org.springframework.context.ApplicationEvent;
  * Event raised when an ApplicationContext gets initialized or refreshed.
  * @author Juergen Hoeller
  * @since 04.03.2003
+ * 当ApplicationContext已经初始化或刷新后发送的事件
+ * 初始化的含义是：所以bean已经被装载，单例bean已经被预实例化，ApplicationContext已经准备好
  */
 public class ContextRefreshedEvent extends ApplicationEvent {
 

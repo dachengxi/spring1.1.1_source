@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationEvent;
  * Event raised when an ApplicationContext gets closed.
  * @author Juergen Hoeller
  * @since 12.08.2003
+ * 使用ApplicationContext的close方法结束上下文的时候发送的事件，这就意味着singleton被销毁
  */
 public class ContextClosedEvent extends ApplicationEvent {
 

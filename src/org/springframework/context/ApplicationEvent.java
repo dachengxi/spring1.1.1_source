@@ -23,6 +23,7 @@ import java.util.EventObject;
  * Abstract as it doesn't make sense for generic events
  * to be published directly.
  * @author Rod Johnson
+ * Spring提供了三个标准事件：ContextRefreshEvent，ContextClosedEvent，RequestHandledEvent
  */
 public abstract class ApplicationEvent extends EventObject {
 
