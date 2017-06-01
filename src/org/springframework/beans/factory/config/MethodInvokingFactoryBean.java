@@ -76,6 +76,7 @@ import org.springframework.beans.support.ArgumentConvertingMethodInvoker;
  * @author Colin Sampaleanu
  * @author Juergen Hoeller
  * @since 2003-11-21
+ * 用方法调用的返回值来设置bean的属性
  */
 public class MethodInvokingFactoryBean extends ArgumentConvertingMethodInvoker
 		implements FactoryBean, InitializingBean {
