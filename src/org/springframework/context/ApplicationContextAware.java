@@ -49,6 +49,8 @@ import org.springframework.beans.BeansException;
  * @see org.springframework.beans.factory.BeanFactoryAware
  * @see org.springframework.beans.factory.InitializingBean
  * @see org.springframework.beans.factory.BeanFactory
+ * 实现了此接口的bean，如果被装载到Context中，当bean创建的时候，将回调这个bean的setApplicationContext方法
+ * 此方法提供了一个指向当前上下文的引用，这个引用可以方便bean与上下文发生交互
  */
 public interface ApplicationContextAware {
 	
@@ -62,6 +64,7 @@ public interface ApplicationContextAware {
 	 * @throws ApplicationContextException in case of applicationContext initialization errors
 	 * @throws BeansException if thrown by application applicationContext methods
 	 * @see org.springframework.beans.factory.BeanInitializationException
+	 * 设置上下文
 	 */
 	void setApplicationContext(ApplicationContext applicationContext) throws BeansException;
 
