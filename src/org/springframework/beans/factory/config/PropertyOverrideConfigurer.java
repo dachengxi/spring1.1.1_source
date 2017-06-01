@@ -53,16 +53,26 @@ import org.springframework.beans.FatalBeanException;
  * @author Juergen Hoeller
  * @since 12.03.2003
  * @see PropertyPlaceholderConfigurer
+ * 跟PropertyPlaceholderConfigurer类似，但是PropertyOverrideConfigurer对于bean属性可以有缺省值或者根本没有值
+ * 如果起覆盖作用的Properties文件没有某个bean属性的内容，那么缺省的上下文定义将被使用
  */
 public class PropertyOverrideConfigurer extends PropertyResourceConfigurer {
 
 	/** Contains names of beans that have overrides */
+	//带有overrides的bean名称
 	private Set beanNames = Collections.synchronizedSet(new HashSet());
-	
+
+	/**
+	 * 处理属性
+	 * @param beanFactory	the bean factory used by the application context
+	 * @param props the Properties to apply
+	 * @throws BeansException
+	 */
 	protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props)
 			throws BeansException {
 		for (Enumeration enum = props.propertyNames(); enum.hasMoreElements();) {
 			String key = (String) enum.nextElement();
+			//处理key
 			processKey(beanFactory, key, props.getProperty(key));
 		}
 	}
@@ -76,13 +86,23 @@ public class PropertyOverrideConfigurer extends PropertyResourceConfigurer {
 		if (dotIndex == -1) {
 			throw new FatalBeanException("Invalid key [" + key + "]: expected 'beanName.property'");
 		}
+		//bean名字
 		String beanName = key.substring(0, dotIndex);
+		//bean属性
 		String beanProperty = key.substring(dotIndex+1);
 		beanNames.add(beanName);
+		//设置属性值
 		applyPropertyValue(factory, beanName, beanProperty, value);
 		logger.debug("Property '" + key + "' set to [" + value + "]");
 	}
-	
+
+	/**
+	 * 设置属性值
+	 * @param factory
+	 * @param beanName
+	 * @param property
+	 * @param value
+	 */
 	protected void applyPropertyValue(ConfigurableListableBeanFactory factory, String beanName, String property, String value) {
 		BeanDefinition bd = factory.getBeanDefinition(beanName);
 		bd.getPropertyValues().addPropertyValue(property, value);

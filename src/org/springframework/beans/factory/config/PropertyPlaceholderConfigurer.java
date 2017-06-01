@@ -193,11 +193,13 @@ public class PropertyPlaceholderConfigurer extends PropertyResourceConfigurer {
 	 */
 	protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props)
 			throws BeansException {
-		//从BeanFactory中获取bean名字
+		//从BeanFactory中获取所有的bean名字
 		String[] beanNames = beanFactory.getBeanDefinitionNames();
 		for (int i = 0; i < beanNames.length; i++) {
+			//根据名字获取BeanDefinition
 			BeanDefinition bd = beanFactory.getBeanDefinition(beanNames[i]);
 			try {
+				//解析BeanDefinition
 				parseBeanDefinition(props, bd);
 			}
 			catch (BeanDefinitionStoreException ex) {
@@ -206,23 +208,42 @@ public class PropertyPlaceholderConfigurer extends PropertyResourceConfigurer {
 		}
 	}
 
+	/**
+	 * 解析BeanDefinition
+	 * @param props
+	 * @param beanDefinition
+	 */
 	protected void parseBeanDefinition(Properties props, BeanDefinition beanDefinition) {
+		//获取BeanDefinition中的属性值
 		MutablePropertyValues pvs = beanDefinition.getPropertyValues();
 		if (pvs != null) {
+			//使用从属性文件中获取到的属性来处理
 			parsePropertyValues(props, pvs);
 		}
+		//构造方法参数处理
 		ConstructorArgumentValues cas = beanDefinition.getConstructorArgumentValues();
 		if (cas != null) {
+			//处理index参数
 			parseIndexedArgumentValues(props, cas.getIndexedArgumentValues());
+			//处理一般参数
 			parseGenericArgumentValues(props, cas.getGenericArgumentValues());
 		}
 	}
 
+	/**
+	 * 使用从属性文件中获取到的属性来处理
+	 * @param props 属性文件中的属性
+	 * @param pvs BeanDefinition中原有属性
+	 */
 	protected void parsePropertyValues(Properties props, MutablePropertyValues pvs) {
+		//遍历BeanDefinition中的所有属性
 		for (int j = 0; j < pvs.getPropertyValues().length; j++) {
+			//获取BeanDefinition中定义的属性
 			PropertyValue pv = pvs.getPropertyValues()[j];
+			//使用属性文件中获取到的配置来生成新值
 			Object newVal = parseValue(props, pv.getValue());
 			if (!ObjectUtils.nullSafeEquals(newVal, pv.getValue())) {
+				//使用新值替换原来的
 				pvs.addPropertyValue(pv.getName(), newVal);
 			}
 		}
@@ -249,10 +270,18 @@ public class PropertyPlaceholderConfigurer extends PropertyResourceConfigurer {
 		}
 	}
 
+	/**
+	 * 使用属性文件中获取到的配置来生成新值
+	 * @param props 属性文件中的属性
+	 * @param value BeanDefinition中原来的值
+	 * @return
+	 */
 	protected Object parseValue(Properties props, Object value) {
+		//value是String类型
 		if (value instanceof String) {
 			return parseString(props, (String) value, null);
 		}
+		//引用类型
 		else if (value instanceof RuntimeBeanReference) {
       RuntimeBeanReference ref = (RuntimeBeanReference) value;
       String newBeanName = parseString(props, ref.getBeanName(), null);
@@ -269,9 +298,11 @@ public class PropertyPlaceholderConfigurer extends PropertyResourceConfigurer {
 		else if (value instanceof Map) {
 			parseMap(props, (Map) value);
 		}
+		//BeanDefinition类型
 		else if (value instanceof BeanDefinition) {
 			parseBeanDefinition(props, (BeanDefinition) value);
 		}
+		//BeanDefinitionHolder类型
 		else if (value instanceof BeanDefinitionHolder) {
 			parseBeanDefinition(props, ((BeanDefinitionHolder) value).getBeanDefinition());
 		}
@@ -334,6 +365,7 @@ public class PropertyPlaceholderConfigurer extends PropertyResourceConfigurer {
 		while (startIndex != -1) {
 			int endIndex = strVal.indexOf(this.placeholderSuffix, startIndex + this.placeholderPrefix.length());
 			if (endIndex != -1) {
+				//占位符，去掉前后缀
 				String placeholder = strVal.substring(startIndex + this.placeholderPrefix.length(), endIndex);
 				String originalPlaceholderToUse = null;
 
