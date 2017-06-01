@@ -67,16 +67,21 @@ import javax.servlet.http.HttpServletResponse;
  * @see ContextLoader
  * @see ContextLoaderListener
  * @see org.springframework.web.util.Log4jConfigServlet
+ * Servlet2.2和Servlet2.3不支持在Servlet实例化之前实例化Listener，所以ContextLoaderListener适合用在Servlet2.4之后
+ * ContextLoaderServlet适合用在2.3之前
  */
 public class ContextLoaderServlet extends HttpServlet {
-
+	//上下文加载器
 	private ContextLoader contextLoader;
 
 	/**
 	 * Initialize the root web application context.
+	 * 初始化web应用上下文
 	 */
 	public void init() throws ServletException {
+		//创建ContextLoader
 		this.contextLoader = createContextLoader();
+		//初始化web应用上下文，在ContextLoader中实现
 		this.contextLoader.initWebApplicationContext(getServletContext());
 	}
 

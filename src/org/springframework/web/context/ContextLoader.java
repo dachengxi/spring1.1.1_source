@@ -56,18 +56,21 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
  * @see ContextLoaderServlet
  * @see ConfigurableWebApplicationContext
  * @see org.springframework.web.context.support.XmlWebApplicationContext
+ * BeanFactory需要使用编程的方式来创建，而ApplicationContext可以使用比如ContextLoader声明式被创建
  */
 public class ContextLoader {
 
 	/**
 	 * Config param for the root WebApplicationContext implementation class to use:
 	 * "contextClass"
+	 * contextClass参数
 	 */
 	public static final String CONTEXT_CLASS_PARAM = "contextClass";
 
 	/**
 	 * Default context class for ContextLoader.
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
+	 * 默认的contextClass是XMLWebApplicationContext
 	 */
 	public static final Class DEFAULT_CONTEXT_CLASS = XmlWebApplicationContext.class;
 
@@ -75,6 +78,7 @@ public class ContextLoader {
 	 * Name of servlet context parameter that can specify the config location
 	 * for the root context, falling back to the implementation's default else.
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext#DEFAULT_CONFIG_LOCATION
+	 * contextConfigLocation参数
 	 */
 	public static final String CONFIG_LOCATION_PARAM = "contextConfigLocation";
 
@@ -89,13 +93,17 @@ public class ContextLoader {
 	 * @throws BeansException if the context couldn't be initialized
 	 * @see #CONTEXT_CLASS_PARAM
 	 * @see #CONFIG_LOCATION_PARAM
+	 * 使用给定的ServletContext来实例化Spring的web应用上下文
 	 */
 	public WebApplicationContext initWebApplicationContext(ServletContext servletContext) throws BeansException {
 		servletContext.log("Loading root WebApplicationContext");
 		try {
+			//加载父上下文
 			ApplicationContext parent = loadParentContext(servletContext);
+			//创建web应用上下文
 			WebApplicationContext wac = createWebApplicationContext(servletContext, parent);
 			logger.info("Using context class [" + wac.getClass().getName() + "] for root WebApplicationContext");
+			//将web应用上下文保存在Servlet上下文
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac);
 			if (logger.isInfoEnabled()) {
 				logger.info("Published root WebApplicationContext [" + wac +
@@ -126,13 +134,18 @@ public class ContextLoader {
 	 * @see #DEFAULT_CONTEXT_CLASS
 	 * @see ConfigurableWebApplicationContext
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
+	 * 创建web应用上下文
 	 */
 	protected WebApplicationContext createWebApplicationContext(ServletContext servletContext, ApplicationContext parent)
 			throws BeansException {
+		//获取初始化参数，contextClass
 		String contextClassName = servletContext.getInitParameter(CONTEXT_CLASS_PARAM);
+		//默认的contextClass
 		Class contextClass = DEFAULT_CONTEXT_CLASS;
+		//web.xml中配置的contextClass不为空
 		if (contextClassName != null) {
 			try {
+				//反射获取Class
 				contextClass = Class.forName(contextClassName, true, Thread.currentThread().getContextClassLoader());
 			}
 			catch (ClassNotFoundException ex) {
@@ -143,16 +156,22 @@ public class ContextLoader {
 					"Custom context class [" + contextClassName + "] is not of type ConfigurableWebApplicationContext");
 			}
 		}
+		//实例化contextClass
 		ConfigurableWebApplicationContext wac =
 		    (ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
+		//设置父上下文
 		wac.setParent(parent);
+		//设置Servlet上下文
 		wac.setServletContext(servletContext);
+		//获取初始化参数contextConfigLocation
 		String configLocation = servletContext.getInitParameter(CONFIG_LOCATION_PARAM);
 		if (configLocation != null) {
+			//设置配置的位置
 			wac.setConfigLocations(
 				StringUtils.tokenizeToStringArray(
 					configLocation, ConfigurableWebApplicationContext.CONFIG_LOCATION_DELIMITERS, true, true));
 		}
+		//web应用上下文刷新
 		wac.refresh();
 		return wac;
 	}
@@ -172,6 +191,7 @@ public class ContextLoader {
 	/**
 	 * Close Spring's web application context for the given servlet context.
 	 * @param servletContext current servlet context
+	 *  关闭web应用上下文
 	 */
 	public void closeWebApplicationContext(ServletContext servletContext) throws ApplicationContextException {
 		servletContext.log("Closing root WebApplicationContext");
