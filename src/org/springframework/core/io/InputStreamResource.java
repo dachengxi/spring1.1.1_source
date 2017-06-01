@@ -30,6 +30,7 @@ import java.io.InputStream;
  *
  * @author Juergen Hoeller
  * @since 28.12.2003
+ * 从输入流获取资源
  */
 public class InputStreamResource extends AbstractResource {
 

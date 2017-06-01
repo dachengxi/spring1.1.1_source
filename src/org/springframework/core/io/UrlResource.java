@@ -31,9 +31,10 @@ import java.net.URLDecoder;
  * @author Juergen Hoeller
  * @since 28.12.2003
  * @see java.net.URL
+ * 从一个url中获取资源
  */
 public class UrlResource extends AbstractResource {
-
+	//file协议
 	public static final String PROTOCOL_FILE = "file";
 
 	private final URL url;

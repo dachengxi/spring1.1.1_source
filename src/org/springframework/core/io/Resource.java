@@ -30,11 +30,13 @@ import java.net.URL;
  *
  * @author Juergen Hoeller
  * @since 28.12.2003
+ * 描述一个资源的接口
  */
 public interface Resource extends InputStreamSource {
 
 	/**
 	 * Return whether this resource actually exists in physical form.
+	 * 返回资源是否存在，不存在返回false
 	 */
 	boolean exists();
 
@@ -43,6 +45,7 @@ public interface Resource extends InputStreamSource {
 	 * stream. If true, the InputStream cannot be read multiple times,
 	 * and must be read and closed to avoid resource leaks.
 	 * <p>Will be false for all usual resource descriptors.
+	 * 资源是否被打开
 	 */
 	boolean isOpen();
 
@@ -50,6 +53,7 @@ public interface Resource extends InputStreamSource {
 	 * Return a URL handle for this resource.
 	 * @throws IOException if the resource cannot be resolved as URL,
 	 * i.e. if the resource is not available as descriptor
+	 * 获取资源的URL
 	 */
 	URL getURL() throws IOException;
 
@@ -57,6 +61,7 @@ public interface Resource extends InputStreamSource {
 	 * Return a File handle for this resource.
 	 * @throws IOException if the resource cannot be resolved as absolute
 	 * file path, i.e. if the resource is not available in a file system
+	 * 得到资源的文件句柄
 	 */
 	File getFile() throws IOException;
 
@@ -65,12 +70,14 @@ public interface Resource extends InputStreamSource {
 	 * @param relativePath the relative path (relative to this resource)
 	 * @return the resource handle for the relative resource
 	 * @throws IOException if the relative resource cannot be determined
+	 * 创建一个以当前资源为相对路径的资源
 	 */
 	Resource createRelative(String relativePath) throws IOException;
 
 	/**
 	 * Return a filename for this resource, i.e. typically the last
 	 * part of the path: for example, "myfile.txt".
+	 * 获取文件名
 	 */
 	String getFilename();
 
@@ -80,6 +87,7 @@ public interface Resource extends InputStreamSource {
 	 * <p>Implementations are also encouraged to return this value
 	 * from their toString method.
 	 * @see java.lang.Object#toString
+	 * 返回资源的描述，通常是全限定名或者实际的url
 	 */
 	String getDescription();
 

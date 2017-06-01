@@ -40,6 +40,7 @@ import org.springframework.util.StringUtils;
  * @since 28.12.2003
  * @see javax.servlet.ServletContext#getResourceAsStream
  * @see javax.servlet.ServletContext#getRealPath
+ * 从Servlet上下文获取资源
  */
 public class ServletContextResource extends AbstractResource {
 

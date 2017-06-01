@@ -28,10 +28,12 @@ package org.springframework.core.io;
  * @see DefaultResourceLoader
  * @see ResourceEditor
  * @see org.springframework.context.ApplicationContext
+ * 资源加载器结构，其实现类可以加载资源
  */
 public interface ResourceLoader {
 
 	/** Pseudo URL prefix for loading from the class path */
+	//类路径前缀
 	String CLASSPATH_URL_PREFIX = "classpath:";
 
 	/**
@@ -52,6 +54,7 @@ public interface ResourceLoader {
 	 * @see #CLASSPATH_URL_PREFIX
 	 * @see org.springframework.core.io.Resource#exists
 	 * @see org.springframework.core.io.Resource#getInputStream
+	 * 从指定的路径获取资源
 	 */
 	Resource getResource(String location);
 

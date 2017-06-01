@@ -40,6 +40,7 @@ import org.springframework.util.StringUtils;
  * @see java.lang.Thread#getContextClassLoader
  * @see java.lang.ClassLoader#getResourceAsStream
  * @see java.lang.Class#getResourceAsStream
+ * 从类路径获取资源
  */
 public class ClassPathResource extends AbstractResource {
 

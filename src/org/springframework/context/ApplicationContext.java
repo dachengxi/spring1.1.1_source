@@ -56,6 +56,8 @@ import org.springframework.core.io.ResourceLoader;
  * 事件传递是通过ApplicationEvent和ApplicationListener来提供的
  * 如果上下文中有实现了ApplicationListener接口的bean，每当有ApplicationEvent发布到ApplicationContext中，那个bean就会被通知
  *
+ * 继承了ResourceLoader接口，用来实现对资源的访问
+ *
  */
 public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory,
 		MessageSource, ApplicationEventPublisher, ResourceLoader {

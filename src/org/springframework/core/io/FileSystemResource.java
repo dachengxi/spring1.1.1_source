@@ -28,6 +28,7 @@ import java.net.URL;
  * @author Juergen Hoeller
  * @since 28.12.2003
  * @see java.io.File
+ * 从文件系统获取资源
  */
 public class FileSystemResource extends AbstractResource {
 
