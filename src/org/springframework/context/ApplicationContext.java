@@ -58,6 +58,10 @@ import org.springframework.core.io.ResourceLoader;
  *
  * 继承了ResourceLoader接口，用来实现对资源的访问
  *
+ * ApplicationContext会自动查找实现了BeanPostProcessor接口的类。
+ * ApplicationContext会自动查找实现了BeanFactoryPostProcessor接口的类。
+ *
+ * BeanFactory需要使用编程的方式来创建，而ApplicationContext可以使用比如ContextLoader声明式被创建
  */
 public interface ApplicationContext extends ListableBeanFactory, HierarchicalBeanFactory,
 		MessageSource, ApplicationEventPublisher, ResourceLoader {
@@ -66,18 +70,21 @@ public interface ApplicationContext extends ListableBeanFactory, HierarchicalBea
 	 * Return the parent context, or null if there is no parent,
 	 * and this is the root of the context hierarchy.
 	 * @return the parent context, or null if there is no parent
+	 * 获取父上下文
 	 */
 	ApplicationContext getParent();
 	
 	/**
 	 * Return a friendly name for this context.
 	 * @return a display name for this context
+	 * 获取名字
 	*/
 	String getDisplayName();
 
 	/**
 	 * Return the timestamp when this context was first loaded.
 	 * @return the timestamp (ms) when this context was first loaded
+	 * 返回启动的时间
 	 */
 	long getStartupDate();
 
