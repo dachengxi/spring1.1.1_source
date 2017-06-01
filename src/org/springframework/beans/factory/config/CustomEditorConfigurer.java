@@ -55,6 +55,7 @@ import org.springframework.util.ClassUtils;
  * @since 27.02.2004
  * @see ConfigurableBeanFactory#registerCustomEditor
  * @see org.springframework.util.ClassUtils#forName
+ * 定制PropertyEditor，自定义editor
  */
 public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered {
 
@@ -80,6 +81,7 @@ public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered
 	}
 
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+		//先找到自定义的editor
 		if (this.customEditors != null) {
 			for (Iterator it = this.customEditors.keySet().iterator(); it.hasNext();) {
 				Object key = it.next();
@@ -106,6 +108,7 @@ public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered
 					throw new BeanInitializationException("Mapped value [" + value + "] for custom editor key [" +
 							key + "] is not of required type [" + PropertyEditor.class.getName() + "]");
 				}
+				//注册到BeanFactory中去
 				beanFactory.registerCustomEditor(requiredType, (PropertyEditor) value);
 			}
 		}
