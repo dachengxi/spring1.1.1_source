@@ -74,6 +74,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	 * @throws AopConfigException if the config is invalid. We try
 	 * to throw an informative exception in this case, rather than let
 	 * a mysterious failure happen later.
+	 * JDK动态代理
 	 */
 	protected JdkDynamicAopProxy(AdvisedSupport config) throws AopConfigException {
 		if (config == null)
@@ -177,6 +178,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	/**
 	 * Create a new Proxy object for the given object, proxying
 	 * the given interface. Uses the thread context class loader.
+	 * 获取代理
 	 */
 	public Object getProxy() {
 		return getProxy(Thread.currentThread().getContextClassLoader());
@@ -185,12 +187,15 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	/**
 	 * Create a new Proxy object for the given object, proxying
 	 * the given interface. Uses the given class loader.
+	 * 获取代理
 	 */
 	public Object getProxy(ClassLoader cl) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating JDK dynamic proxy for [" + this.advisedSupport.getTargetSource().getTargetClass() + "]");
 		}
+		//获取要代理的接口
 		Class[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advisedSupport);
+		//创建代理实例，使用反射
 		return Proxy.newProxyInstance(cl, proxiedInterfaces, this);
 	}
 

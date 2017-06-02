@@ -21,7 +21,9 @@ import java.lang.reflect.Method;
 /**
  * Advice invoked before a method is invoked. Such advices cannot
  * prevent the method call proceeding, unless they throw a Throwable.
- * @author Rod Johnson
+ * @author Rod Johnson‘
+ * 方法前置通知
+ * 可以再连接点执行之前插入自定义的行为，但是不能改变返回值
  */
 public interface MethodBeforeAdvice extends BeforeAdvice {
 	

@@ -91,6 +91,7 @@ public class Cglib2AopProxy implements AopProxy, Serializable {
 	/**
 	 * @throws AopConfigException if the config is invalid. We try to throw an informative
 	 * exception in this case, rather than let a mysterious failure happen later.
+	 * CGLIB代理
 	 */
 	protected Cglib2AopProxy(AdvisedSupport config) throws AopConfigException {
 		if (config == null) {
@@ -132,6 +133,7 @@ public class Cglib2AopProxy implements AopProxy, Serializable {
 	/**
 	 * Create a new Proxy object for the given object, proxying the given
 	 * interface. Uses the thread context class loader.
+	 * 获取代理
 	 */
 	public Object getProxy() {
 		return getProxy(Thread.currentThread().getContextClassLoader());
@@ -140,6 +142,7 @@ public class Cglib2AopProxy implements AopProxy, Serializable {
 	/**
 	 * Create a new Proxy object for the given object, proxying the given
 	 * interface. Uses the given class loader.
+	 * 获取代理，使用CGLIB方式
 	 */
 	public Object getProxy(ClassLoader cl) {
 		if (logger.isDebugEnabled()) {

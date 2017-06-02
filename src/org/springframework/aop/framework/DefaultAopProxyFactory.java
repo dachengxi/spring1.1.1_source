@@ -19,19 +19,24 @@ package org.springframework.aop.framework;
 /**
  * Simple implementation of AopProxyFactory
  * @author Rod Johnson
+ * 默认的AopProxy工厂
  */
 public class DefaultAopProxyFactory implements AopProxyFactory {
 
 	/**
 	 * @see org.springframework.aop.framework.AopProxyFactory#createAopProxy(org.springframework.aop.framework.AdvisedSupport)
+     * 创建AOP代理
 	 */
 	public AopProxy createAopProxy(AdvisedSupport advisedSupport) throws AopConfigException {
+	    //是否使用CGLIB，需要优化或者配置了目标类或者没有代理接口
 		boolean useCglib = advisedSupport.getOptimize() || advisedSupport.getProxyTargetClass() || advisedSupport.getProxiedInterfaces().length == 0;
 		if (useCglib) {
+		    //创建CGLIB代理
 			return CglibProxyFactory.createCglibProxy(advisedSupport);
 		}
 		else {
 			// Depends on whether we have expose proxy or frozen or static ts
+            //使用JDK动态代理
 			return new JdkDynamicAopProxy(advisedSupport);
 		}
 	}

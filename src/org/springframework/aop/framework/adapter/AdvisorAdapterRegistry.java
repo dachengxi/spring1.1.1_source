@@ -27,6 +27,7 @@ import org.springframework.aop.Advisor;
  * by any Spring user.</i>
  *
  * @author Rod Johnson
+ * 主要做拦截器解析用的
  */
 public interface AdvisorAdapterRegistry {
 	

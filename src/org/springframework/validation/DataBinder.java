@@ -48,6 +48,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
  * @see #bind
  * @see #getErrors
  * @see org.springframework.web.bind.ServletRequestDataBinder
+ * 数据绑定类，构建于BeanWrapper之上
  */
 public class DataBinder {
 

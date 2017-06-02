@@ -50,6 +50,7 @@ public interface MethodMatcher {
 	 * @param targetClass target class (may be null, in which case the candidate
 	 * class must be taken to be the method's declaring class)
 	 * @return whether or not this method matches statically
+	 * 用来测试这个切点是否匹配目标类的给定方法
 	 */
 	boolean matches(Method m, Class targetClass);
 	
@@ -63,6 +64,7 @@ public interface MethodMatcher {
 	 * fields also.
 	 * @return whether or not a runtime matche via the 3-arg matches() method is
 	 * required if static matching passed.
+	 * 判断MethodMatcher是否是动态的
 	 */
 	boolean isRuntime();
 	

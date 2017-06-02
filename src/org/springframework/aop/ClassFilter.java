@@ -25,6 +25,7 @@ package org.springframework.aop;
  *
  * @author Rod Johnson
  * @see org.springframework.aop.Pointcut
+ * 将切入点限制到一个给定的目标类的集合
  */
 public interface ClassFilter {
 	
@@ -32,6 +33,7 @@ public interface ClassFilter {
 	 * Should the pointcut apply to the given interface or target class?
 	 * @param clazz candidate target class
 	 * @return whether the advice should apply to this candidate target class
+	 * 是否匹配，也就是切点是否能应用到给定的接口或者目标类
 	 */
 	boolean matches(Class clazz);
 

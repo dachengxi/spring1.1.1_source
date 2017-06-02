@@ -32,9 +32,11 @@ public abstract class AopProxyUtils {
 	 * Get complete set of interfaces to proxy. This will always add the Advised interface
 	 * unless the AdvisedSupport's "opaque" flag is true.
 	 * @return the complete set of interfaces to proxy
+	 * 获取要代理的接口
 	 */
 	public static Class[] completeProxiedInterfaces(AdvisedSupport advised) {
 		// Won't include Advised, which may be necessary.
+		//AdvisedSupport中记录的接口
 		Class[] proxiedInterfacesOnConfig = advised.getProxiedInterfaces() == null ? new Class[0] : advised.getProxiedInterfaces();
 		int lengthFromConfig = proxiedInterfacesOnConfig.length;
 		int addedInterfaces = 0;

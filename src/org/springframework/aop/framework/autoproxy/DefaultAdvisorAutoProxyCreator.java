@@ -37,6 +37,8 @@ import org.springframework.beans.factory.ListableBeanFactory;
  * The separator (.) will also be used in this case.
  *
  * @author Rod Johnson
+ * 更通用强大的自动代理生成器，能自动应用于当前上下文符合条件的Advisor
+ * 不需要在自动代理Advisor的bean定义中包含特定bean的名字
  */
 public class DefaultAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCreator implements BeanNameAware {
 

@@ -24,6 +24,7 @@ import org.aopalliance.aop.Advice;
  * After returning advice is invoked only on normal method return, not if an
  * exception is thrown. Such advice can see the return value, but cannot change it.
  * @author Rod Johnson
+ * 后置通知，可以访问返回值，但是不能改变返回值，可以访问被调用的方法，参数和目标对象
  */
 public interface AfterReturningAdvice extends Advice {
 	

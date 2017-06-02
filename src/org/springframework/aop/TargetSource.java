@@ -29,6 +29,7 @@ package org.springframework.aop;
  * directly: This is an AOP framework interface.
  *
  * @author Rod Johnson
+ * 返回实现切入点的目标对象，每次AOP处理方法调用时，目标实例都会用TargetSource实现
  */
 public interface TargetSource {
 

@@ -27,6 +27,7 @@ package org.springframework.aop.support;
  * @deprecated use Perl5RegexpMethodPointcut instead
  * @see Perl5RegexpMethodPointcut
  * @see JdkRegexpMethodPointcut
+ * 正则表达式切点，是一个静态切点
  */
 public class RegexpMethodPointcut extends Perl5RegexpMethodPointcut {
 

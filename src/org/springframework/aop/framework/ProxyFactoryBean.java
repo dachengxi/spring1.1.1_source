@@ -82,6 +82,8 @@ import org.springframework.core.OrderComparator;
  * @see org.aopalliance.intercept.MethodInterceptor
  * @see org.springframework.aop.framework.Advised
  * @see org.springframework.aop.target.SingletonTargetSource
+ * 是一个工厂Bean
+ *
  */
 public class ProxyFactoryBean extends AdvisedSupport
     implements FactoryBean, BeanFactoryAware, AdvisedSupportListener {
@@ -115,11 +117,12 @@ public class ProxyFactoryBean extends AdvisedSupport
 	/**
 	 * Names of Advisor and Advice beans in the factory.
 	 * Default is for globals expansion only.
+	 * Advisor或者Advice类型的bean的名字
 	 */
 	private String[] interceptorNames;
-	
+	//是否单例
 	private boolean singleton = true;
-
+	//主要做拦截器解析用的
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
 
 	/**
@@ -131,11 +134,13 @@ public class ProxyFactoryBean extends AdvisedSupport
 	/**
 	 * Name of the target or TargetSource bean. Null if the TargetSource is not specified in
 	 * the interceptorNames list.
+	 * 目标对象名字
 	 */
 	private String targetName;
 
 
 	/** If this is a singleton, the cached singleton proxy instance */
+	//单例实例
 	private Object singletonInstance;
 
 
@@ -188,15 +193,24 @@ public class ProxyFactoryBean extends AdvisedSupport
 		this.advisorAdapterRegistry = advisorAdapterRegistry;
 	}
 
+	/**
+	 *  实现了BeanFactoryAware接口，会在BeanFactory创建之后回调此方法
+	 * @param beanFactory owning BeanFactory (may not be null).
+	 * The bean can immediately call methods on the factory.
+	 * @throws BeansException
+	 */
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
 		this.beanFactory = beanFactory;
+		//创建通知链，初始化注册的Advice并包装成Advisor
 		createAdvisorChain();
-		if (this.singleton) {
+		if (this.singleton) {//单例，需要刷新TargetSource
 			this.targetSource = freshTargetSource();
 			// eagerly initialize the shared singleton instance
+			//早期初始化单例实例
 			getSingletonInstance();
 			// We must listen to superclass advice change events to recache the singleton
 			// instance if necessary.
+			//添加监听器
 			addListener(this);
 		}
 	}
@@ -209,8 +223,10 @@ public class ProxyFactoryBean extends AdvisedSupport
 	 * getObject() for a proxy.
 	 * @return Object a fresh AOP proxy reflecting the current
 	 * state of this factory
+	 * 返回一个代理，这个方法将创建一个包装了目标对象的AOP代理
 	 */
 	public Object getObject() throws BeansException {
+		//如果是单例，返回单例实例，如果不是单例，创建一个原型实例返回
 		return (this.singleton) ? getSingletonInstance() : newPrototypeInstance();
 	}
 
@@ -225,9 +241,16 @@ public class ProxyFactoryBean extends AdvisedSupport
 		return this.singleton;
 	}
 
-
+	/**
+	 * 获取单例实例
+	 * @return
+	 */
 	private Object getSingletonInstance() {
+		//单例实例为空的话，需要先创建代理返回
 		if (this.singletonInstance == null) {
+			//createAopProxy在AdvisedSupport中实现
+			//先创建AOP代理，然后获取代理
+			//获取代理的根据实际返回的代理类型，目前只有JDK动态代理和CGLIB代理
 			this.singletonInstance = this.createAopProxy().getProxy();
 		}
 		return this.singletonInstance;
@@ -237,6 +260,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 	 * Create a new prototype instance of this class's created proxy object,
 	 * backed by an independent advisedSupport configuration
 	 * @return a totally independent proxy, whose advice we may manipulate in isolation
+	 * 创建一个原型实例
 	 */
 	private synchronized Object newPrototypeInstance() {
 		// In the case of a prototype, we need to give the proxy
@@ -246,12 +270,15 @@ public class ProxyFactoryBean extends AdvisedSupport
 		if (logger.isDebugEnabled()) {
 			logger.debug("Creating copy of prototype ProxyFactoryBean config: " + this);
 		}
+		//独立的配置，需要新建一个实例
 		AdvisedSupport copy = new AdvisedSupport();
 		// The copy needs a fresh advisor chain, and a fresh TargetSource.
+		//刷新TargetSource和Advisor链
 		copy.copyConfigurationFrom(this, freshTargetSource(), freshAdvisorChain());
 		if (logger.isDebugEnabled()) {
 			logger.debug("Copy has config: " + copy);
 		}
+		//创建并获取代理
 		return copy.createAopProxy().getProxy();
 	}
 
@@ -260,6 +287,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 	 * from a BeanFactory will be refreshed each time a new prototype instance
 	 * is added. Interceptors added programmatically through the factory API
 	 * are unaffected by such changes.
+	 * 创建Advisor链
 	 */
 	private void createAdvisorChain() throws AopConfigException, BeansException {
 		if (this.interceptorNames == null || this.interceptorNames.length == 0) {
@@ -284,6 +312,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 					throw new AopConfigException(
 					    "Can only use global advisors or interceptors with a ListableBeanFactory");
 				}
+				//添加全局的Advisor
 				addGlobalAdvisor((ListableBeanFactory) this.beanFactory,
 				    name.substring(0, name.length() - GLOBAL_SUFFIX.length()));
 				continue;
@@ -292,6 +321,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 				// The last name in the chain may be an Advisor/Advice or a target/TargetSource
 				// Unfortunately we don't know. We must
 				// Look at type of the bean
+				//最后一个可能是Advisor/Advice 或者是target/TargetSource
 				if (!isNamedBeanAnAdvisorOrAdvice(interceptorNames[i])) {
 						// Must be an interceptor
 						this.targetName = this.interceptorNames[i];
@@ -307,13 +337,16 @@ public class ProxyFactoryBean extends AdvisedSupport
 			Object advice = null;
 			if (isSingleton() || this.beanFactory.isSingleton(this.interceptorNames[i])) {
 				// Add the real Advisor/Advice to the chain
+				//获取advice通知
 				advice = this.beanFactory.getBean(this.interceptorNames[i]);
 			}
 			else {
 				// It's a prototype Advice or Advisor: replace with a prototype
 				//avoid unnecessary creation of prototype bean just for advisor chain initialization
+				//原型的，新建一个Advisor
 				advice = new PrototypePlaceholderAdvisor(interceptorNames[i]);
 			}
+			//添加Advisor
 			addAdvisorOnChainCreation(advice, this.interceptorNames[i]);
 		}
 	}
@@ -407,6 +440,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 	 * @param next advice, advisor or target object
 	 * @param name bean name from which we obtained this object in our owning
 	 * bean factory
+	 * 添加Advisor
 	 */
 	private void addAdvisorOnChainCreation(Object next, String name) {
 		if (logger.isDebugEnabled()) {
@@ -420,7 +454,8 @@ public class ProxyFactoryBean extends AdvisedSupport
 			// if it wasn't just updating the TargetSource
 		if (logger.isDebugEnabled()) {
 			logger.debug("Adding advisor with name [" + name + "]");
-		}			
+		}
+		//添加Advisor，在AdvisedSupport中实现
 		addAdvisor((Advisor) advisor);
 	}
 	
@@ -429,6 +464,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 	 * specified at the end of the interceptorNames list, the TargetSource will be this
 	 * class's TargetSource member. Otherwise, we get the target bean and wrap it
 	 * in a TargetSource if necessary.
+	 * 刷新TargetSource
 	 */
 	private TargetSource freshTargetSource() {
 		if (this.targetName == null) {

@@ -70,6 +70,7 @@ public class ProxyConfig implements Serializable {
 	private boolean frozen;
 	
 	/** Factory used to create AopProxy instances */
+	//AOP代理工厂，创建AopProxy实例
 	private transient AopProxyFactory aopProxyFactory = new DefaultAopProxyFactory();
 
 	

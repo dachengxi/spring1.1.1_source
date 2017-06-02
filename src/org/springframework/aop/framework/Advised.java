@@ -70,6 +70,7 @@ public interface Advised {
 	 * Return the Advisors applying to this proxy.
 	 * @return a list of Advisors applying to this proxy.
 	 * Cannot return null, but may return the empty array.
+	 * 返回代理的Advisors
 	 */
 	Advisor[] getAdvisors();
 	
@@ -92,6 +93,7 @@ public interface Advised {
 	 * @param interceptor to add to the tail of the chain
 	 * @deprecated in favor of addAdvice
 	 * @see #addAdvice(org.aopalliance.aop.Advice)
+	 * 添加拦截器
 	 */
 	void addInterceptor(Interceptor interceptor) throws AopConfigException;
 	
@@ -114,6 +116,7 @@ public interface Advised {
 	 * interceptor chain
 	 * @deprecated in favor of addAdvice
 	 * @see #addAdvice(int, org.aopalliance.aop.Advice)
+	 * 添加拦截器
 	 */
 	void addInterceptor(int pos, Interceptor interceptor) throws AopConfigException;
 	
@@ -132,6 +135,7 @@ public interface Advised {
 	 * (for example, because the proxy configuration is frozen)
 	 * @deprecated in favor of addAdvice
 	 * @see #addAdvice(org.aopalliance.aop.Advice)
+	 * 添加后置通知
 	 */
 	void addAfterReturningAdvice(AfterReturningAdvice afterReturningAdvice) throws AopConfigException;
 	
@@ -143,6 +147,7 @@ public interface Advised {
 	 * (for example, because the proxy configuration is frozen)
 	 * @deprecated in favor of addAdvice
 	 * @see #addAdvice(org.aopalliance.aop.Advice)
+	 * 添加前置通知
 	 */
 	void addBeforeAdvice(MethodBeforeAdvice beforeAdvice) throws AopConfigException;
 	
@@ -154,6 +159,7 @@ public interface Advised {
 	 * (for example, because the proxy configuration is frozen)
 	 * @deprecated in favor of addAdvice
 	 * @see #addAdvice(org.aopalliance.aop.Advice)
+	 * 添加抛出通知
 	 */
 	void addThrowsAdvice(ThrowsAdvice throwsAdvice) throws AopConfigException;
 
@@ -162,6 +168,7 @@ public interface Advised {
 	 * <p>The Advisor may be an IntroductionAdvisor, in which new interfaces
 	 * will be available when a proxy is next obtained from the relevant factory.
 	 * @param advisor Advisor to add to the end of the chain
+	 * 添加Advisor到Advisor链尾部
 	 */
 	void addAdvisor(Advisor advisor) throws AopConfigException;
 
@@ -169,6 +176,7 @@ public interface Advised {
 	 * Add an Advisor at the specified position in the chain.
 	 * @param advisor advisor to add at the specified position in the chain
 	 * @param pos position in chain (0 is head). Must be valid.
+	 * 添加Advisor到指定位置
 	 */
 	void addAdvisor(int pos, Advisor advisor) throws AopConfigException;
 	

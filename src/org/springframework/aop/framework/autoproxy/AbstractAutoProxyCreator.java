@@ -74,6 +74,10 @@ import org.springframework.core.Ordered;
  * @since October 13, 2003
  * @see #setInterceptorNames
  * @see BeanNameAutoProxyCreator
+ * 实现了BeanPostProcessor接口，BeanFactory在创建每一个bean实例时，在任何初始化方法（afterPropertiesSet和init-method属性）被调用之前和
+ * 之后，post-processor将会从BeanFactory分别得到一个回调。
+ *
+ * AbstractAutoProxyCreator可以利用postProcess**方法来判断目标类是否需要被Spring AOP进行代理
  */
 public abstract class AbstractAutoProxyCreator extends ProxyConfig
 		implements BeanPostProcessor, BeanFactoryAware, Ordered {
@@ -184,7 +188,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyConfig
 		return this.owningBeanFactory;
 	}
 
-
+	/**
+	 * 在实例化方法之前调用，比如InitializingBean的afterPropertiesSet或者是init-method方法
+	 * @param bean the new bean instance
+	 * @param beanName the beanName of the bean
+	 * @return
+	 */
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		return bean;
 	}
@@ -193,15 +202,18 @@ public abstract class AbstractAutoProxyCreator extends ProxyConfig
 	 * Create a proxy with the configured interceptors if the bean is
 	 * identified as one to proxy by the subclass.
 	 * @see #getAdvicesAndAdvisorsForBean
+	 * 如果子类确定bean需要被代理，就创建一个代理
 	 */
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		// Check for special cases. We don't want to try to autoproxy a part of the autoproxying
 		// infrastructure, lest we get a stack overflow.
+
+		//不能代理基础类
 		if (isInfrastructureClass(bean, beanName) || shouldSkip(bean, beanName)) {
 			logger.debug("Did not attempt to autoproxy infrastructure class [" + bean.getClass().getName() + "]");
 			return bean;
 		}
-
+		//获取自定义的TargetSource
 		TargetSource targetSource = getCustomTargetSource(bean, beanName);
 
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean, beanName, targetSource);

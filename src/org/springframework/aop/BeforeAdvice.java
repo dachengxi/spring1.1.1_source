@@ -24,6 +24,7 @@ import org.aopalliance.aop.Advice;
  * allow field advice in future if desired.
  * @author Rod Johnson
  * @see org.springframework.aop.MethodBeforeAdvice
+ * 前置通知
  */
 public interface BeforeAdvice extends Advice {
 

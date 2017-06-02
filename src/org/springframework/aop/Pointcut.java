@@ -21,11 +21,12 @@ package org.springframework.aop;
  * Core Spring pointcut abstraction. A pointcut is composed of ClassFilters and MethodMatchers.
  * Both these basic terms and a Pointcut itself can be combined to build up combinations.
  * @author Rod Johnson
+ * 切点，用来指定通知到特定的类和方法目标
  */
 public interface Pointcut {
-
+	//ClassFilter将切入点限制到一个给定的目标类的集合
 	ClassFilter getClassFilter();
-	
+	//方法匹配
 	MethodMatcher getMethodMatcher();
 	
 	// could add getFieldMatcher() without breaking most existing code

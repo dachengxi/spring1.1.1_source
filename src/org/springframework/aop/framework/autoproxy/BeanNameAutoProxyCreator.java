@@ -29,9 +29,12 @@ import org.springframework.aop.TargetSource;
  * @since 10.10.2003
  * @see #setBeanNames
  * @see #isMatch
+ * 自动代理创建，为名字符合某个值或者通配符的bean自动创建AOP代理
+ * 主要目的是对多个对象使用相同的配置信息，减少配置工作量
  */
 public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator {
 
+	//被代理的目标bean的名字
 	private List beanNames;
 
 	/**
@@ -45,14 +48,18 @@ public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator {
 
 	/**
 	 * Identify as bean to proxy if the bean name is in the configured list of names.
+	 * 为指定的beanName来获取通知和切面
 	 */
 	protected Object[] getAdvicesAndAdvisorsForBean(Object bean, String beanName, TargetSource targetSource) {
+		//直接存在在beanNames中
 		if (this.beanNames != null) {
 			if (this.beanNames.contains(beanName)) {
 				return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
 			}
+			//遍历beanNames，找到匹配的
 			for (Iterator it = this.beanNames.iterator(); it.hasNext();) {
 				String mappedName = (String) it.next();
+				//匹配
 				if (isMatch(beanName, mappedName)) {
 					return PROXY_WITHOUT_ADDITIONAL_INTERCEPTORS;
 				}
@@ -65,11 +72,12 @@ public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator {
 	 * Return if the given bean name matches the mapped name.
 	 * The default implementation checks for "xxx*" and "*xxx" matches.
 	 * Can be overridden in subclasses.
-	 * @param beanName the bean name to check
-	 * @param mappedName the name in the configured list of names
+	 * @param beanName the bean name to check 要检查的bean的名字
+	 * @param mappedName the name in the configured list of names，在beanNames中存在的名字
 	 * @return if the names match
 	 */
 	protected boolean isMatch(String beanName, String mappedName) {
+		//xxx*并且xxxy 或者*xxx并且yxxx
 		return (mappedName.endsWith("*") && beanName.startsWith(mappedName.substring(0, mappedName.length() - 1))) ||
 				(mappedName.startsWith("*") && beanName.endsWith(mappedName.substring(1, mappedName.length())));
 	}

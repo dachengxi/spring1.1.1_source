@@ -95,6 +95,8 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/**
 	 * Set to true when the first AOP proxy has been created, meaning that we must
 	 * track advice changes via onAdviceChange() callback.
+	 * 第一次创建AOP代理的时候，会设置为true
+	 * 我们需要跟踪advice变化
 	 */
 	private transient boolean isActive;
 
@@ -198,9 +200,11 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/**
 	 * Add a new proxied interface.
 	 * @param newInterface additional interface to proxy
+	 * 添加接口到代理
 	 */
 	public void addInterface(Class newInterface) {
 		this.interfaces.add(newInterface);
+		//advice改变，需要通知监听器
 		adviceChanged();
 		logger.debug("Added new aspect interface: " + newInterface);
 	}
@@ -413,31 +417,45 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 		if (isFrozen()) {
 			throw new AopConfigException("Cannot add advisor: config is frozen");
 		}
+		//添加到链表最后
 		this.advisors.add(pos, advice);
+		//同时更新下存储Advisor的数组
 		updateAdvisorArray();
+		//Advice改变，通知监听器
 		adviceChanged();
 	}
 	
 	public void addAdvisor(int pos, IntroductionAdvisor advisor) throws AopConfigException {
+		//校验接口
 		advisor.validateInterfaces();
 		
 		// if the advisor passed validation we can make the change
+		//遍历添加接口
 		for (int i = 0; i < advisor.getInterfaces().length; i++) {
 			addInterface(advisor.getInterfaces()[i]);
 		}
+		//添加Advisor
 		addAdvisorInternal(pos, advisor);
 	}
 
+	/**
+	 * 添加Advisor
+	 * @param pos position in chain (0 is head). Must be valid.
+	 * @param advisor advisor to add at the specified position in the chain
+	 * @throws AopConfigException
+	 */
 	public void addAdvisor(int pos, Advisor advisor) throws AopConfigException {
+		//引介
 		if (advisor instanceof IntroductionAdvisor) {
 			addAdvisor(pos, (IntroductionAdvisor) advisor);
 		}
-		else {
+		else {//非引介类型的Advisor
 			addAdvisorInternal(pos, advisor);
 		}
 	}
 	
 	public void addAdvisor(Advisor advisor) {
+		//advisors是一个LinkedList，新的要添加到最后
 		int pos = this.advisors.size();
 		addAdvisor(pos, advisor);
 	}
@@ -543,7 +561,10 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 			}
 		}
 	}
-	
+
+	/**
+	 * 激活AOP代理配置，向容器注册代理回调监听器，在第一次创建AOP代理时调用
+	 */
 	private void activate() {
 		this.isActive = true;
 		for (int i = 0; i < this.listeners.size(); i++) {
@@ -554,11 +575,15 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/**
 	 * Subclasses should call this to get a new AOP proxy. They should <b>not</b>
 	 * create an AOP proxy with this as an argument.
+	 * 创建一个AOP代理
 	 */
 	protected synchronized AopProxy createAopProxy() {
+		//第一次创建AOP代理
 		if (!this.isActive) {
+			//激活AOP代理配置
 			activate();
 		}
+		//获取AOP代理工厂，创建AOP代理，实现在DefaultAopProxyFactory中
 		return getAopProxyFactory().createAopProxy(this);
 	}
 	

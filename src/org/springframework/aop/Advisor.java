@@ -31,6 +31,7 @@ import org.aopalliance.aop.Advice;
  * which need not be implemented using interception.
  *
  * @author Rod Johnson
+ * Advisor是一个Aspect的完整模块化表示，一般的一个Advisor包括通知和切点
  */
 public interface Advisor {
 	
