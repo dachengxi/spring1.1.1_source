@@ -33,6 +33,7 @@ import org.springframework.beans.factory.HierarchicalBeanFactory;
  * @author Juergen Hoeller
  * @since 03.11.2003
  * @see ConfigurableListableBeanFactory
+ * 提供配置Factory的各种方法
  */
 public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
 
@@ -41,6 +42,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
 	 * <p>Note that the parent shouldn't be changed: It should only be set outside
 	 * a constructor if it isn't available when an object of this class is created.
 	 * @param parentBeanFactory the parent bean factory
+	 * 设置父工厂
 	 */
 	void setParentBeanFactory(BeanFactory parentBeanFactory);
 
@@ -49,6 +51,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
 	 * given type. To be invoked during factory configuration.
 	 * @param requiredType type of the property
 	 * @param propertyEditor editor to register
+	 * 注册自定义属性编辑器
 	 */
 	void registerCustomEditor(Class requiredType, PropertyEditor propertyEditor);
 
@@ -60,6 +63,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
 	 * ApplicationContext through ApplicationContextAware.
 	 * @see org.springframework.beans.factory.BeanFactoryAware
 	 * @see org.springframework.context.ApplicationContextAware
+	 * 忽略自动注入时候的依赖类型
 	 */
 	void ignoreDependencyType(Class type);
 
@@ -67,6 +71,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
 	 * Add a new BeanPostPrcoessor that will get applied to beans created
 	 * by this factory. To be invoked during factory configuration.
 	 * @param beanPostProcessor the bean processor to register
+	 * 添加一个新的BeanPostProcessor
 	 */
 	void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
@@ -81,6 +86,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
 	 * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
 	 * if there is no bean with the given name
 	 * @throws BeansException if the alias is already in use
+	 * 注册Bean的别名
 	 */
 	void registerAlias(String beanName, String alias) throws BeansException;
 
@@ -94,12 +100,14 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory {
 	 * @param beanName name of the bean
 	 * @param singletonObject the existing object
 	 * @throws BeansException if the singleton could not be registered
+	 * 注册单例
 	 */
 	void registerSingleton(String beanName, Object singletonObject) throws BeansException;
 
 	/**
 	 * Destroy all cached singletons in this factory.
 	 * To be called on shutdown of a factory.
+	 * 销毁已经缓存的单例
 	 */
 	void destroySingletons();
 

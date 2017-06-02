@@ -75,6 +75,7 @@ import org.springframework.core.CollectionFactory;
  * @since 13.02.2004
  * @see #findMatchingBeans
  * @see DefaultListableBeanFactory
+ * 综合AbstractBeanFactory，并实现AutowireCapableBeanFactory
  */
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
     implements AutowireCapableBeanFactory {
@@ -87,7 +88,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		DestructionAwareBeanPostProcessor.class.getName();
 	}
 
-
+	//实例化策略
 	private InstantiationStrategy instantiationStrategy = new CglibSubclassingInstantiationStrategy();
 
 	/**
@@ -95,8 +96,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * the DisposableBean interface, to be destroyed on destroySingletons.
 	 * @see #destroySingletons
 	 */
+	//实现了DisposableBean接口的bean
 	private final Map disposableInnerBeans = Collections.synchronizedMap(new HashMap());
-
+	//
 	private final Map dependentBeanMap = Collections.synchronizedMap(new HashMap());
 
 
@@ -130,6 +132,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	// Implementation of AutowireCapableBeanFactory
 	//---------------------------------------------------------------------
 
+	/**
+	 * 自动注入的实现
+	 * @param beanClass the class of the bean to instantiate 要实例化的bean
+	 * @param autowireMode by name or type, using the constants in this interface 自动注入的类型
+	 * @param dependencyCheck whether to perform a dependency check for objects 依赖检查
+	 * (not applicable to autowiring a constructor, thus ignored there)
+	 * @return
+	 * @throws BeansException
+	 */
 	public Object autowire(Class beanClass, int autowireMode, boolean dependencyCheck)
 			throws BeansException {
 		RootBeanDefinition bd = new RootBeanDefinition(beanClass, autowireMode, dependencyCheck);

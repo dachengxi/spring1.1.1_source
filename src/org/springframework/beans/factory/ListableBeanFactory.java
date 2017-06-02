@@ -44,6 +44,7 @@ import org.springframework.beans.BeansException;
  * @since 16 April 2001
  * @see BeanFactoryUtils
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#registerSingleton
+ * 根据各种条件获取bean的配置清淡
  */
 public interface ListableBeanFactory extends BeanFactory {
 
@@ -53,6 +54,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * <p>Note: Ignores any singleton beans that have been registered by
 	 * other means than bean definitions.
 	 * @return the number of beans defined in the factory
+	 * 获取工厂中BeanDefinition的树林
 	 */
 	int getBeanDefinitionCount();
 
@@ -63,6 +65,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * other means than bean definitions.
 	 * @return the names of all beans defined in this factory,
 	 * or an empty array if none defined
+	 * 获取所有BeanDefinition的名字
 	 */
 	String[] getBeanDefinitionNames();
 	
@@ -76,6 +79,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * @param type class or interface to match, or null for all bean names
 	 * @return the names of beans matching the given object type 
 	 * (including subclasses), or an empty array if none
+	 * 获取指定类型的所有BeanDefinition的名字
 	 */
 	String[] getBeanDefinitionNames(Class type);
 
@@ -86,6 +90,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * other means than bean definitions.
 	 * @param name the name of the bean to look for
 	 * @return if this bean factory contains a bean definition with the given name
+	 * 是否包含指定名字的BeanDefinition
 	 */
 	boolean containsBeanDefinition(String name);
 
@@ -108,6 +113,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	 * keys and the corresponding bean instances as values
 	 * @throws BeansException if the beans could not be created
 	 * @see FactoryBean#getObjectType
+	 * 返回指定类型的bean
 	 */
 	Map getBeansOfType(Class type, boolean includePrototypes, boolean includeFactoryBeans)
 	    throws BeansException;

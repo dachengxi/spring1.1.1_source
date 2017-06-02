@@ -37,6 +37,7 @@ import org.springframework.beans.factory.BeanFactory;
  * @since 04.12.2003
  * @see org.springframework.beans.factory.BeanFactory
  * @see org.springframework.beans.factory.ListableBeanFactory
+ * 提供自动注入，初始化，以及应用bean的后处理器
  */
 public interface AutowireCapableBeanFactory extends BeanFactory {
 
@@ -44,6 +45,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * Constant that indicates autowiring bean properties by name.
 	 * @see #autowire
 	 * @see #autowireBeanProperties
+	 * 根据名字自动注入
 	 */
 	int AUTOWIRE_BY_NAME = 1;
 
@@ -51,12 +53,14 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * Constant that indicates autowiring bean properties by type.
 	 * @see #autowire
 	 * @see #autowireBeanProperties
+	 * 根据类型自动注入
 	 */
 	int AUTOWIRE_BY_TYPE = 2;
 
 	/**
 	 * Constant that indicates autowiring a constructor.
 	 * @see #autowire
+	 * 构造器自动注入
 	 */
 	int AUTOWIRE_CONSTRUCTOR = 3;
 
@@ -64,6 +68,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * Constant that indicates determining an appropriate autowire strategy
 	 * through introspection of the bean class.
 	 * @see #autowire
+	 * 自动检测使用哪种方式注入
 	 */
 	int AUTOWIRE_AUTODETECT = 4;
 
@@ -81,6 +86,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @see #AUTOWIRE_BY_TYPE
 	 * @see #AUTOWIRE_CONSTRUCTOR
 	 * @see #AUTOWIRE_AUTODETECT
+	 * 创建一个bean实例，使用给定的类和自动注入策略
 	 */
 	Object autowire(Class beanClass, int autowireMode, boolean dependencyCheck)
 			throws BeansException;
@@ -93,6 +99,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @throws BeansException if wiring failed
 	 * @see #AUTOWIRE_BY_NAME
 	 * @see #AUTOWIRE_BY_TYPE
+	 * 自动注入bean的属性
 	 */
 	void autowireBeanProperties(Object existingBean, int autowireMode, boolean dependencyCheck)
 			throws BeansException;
@@ -107,6 +114,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
 	 * if there is no bean with the given name
 	 * @throws BeansException if applying the property values failed
+	 * 应用bean的属性值
 	 */
 	void applyBeanPropertyValues(Object existingBean, String name) throws BeansException;
 
@@ -119,6 +127,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @return the bean instance to use, either the original or a wrapped one
 	 * @throws BeansException if any post-processing failed
 	 * @see BeanPostProcessor#postProcessBeforeInitialization
+	 * 应用BeanPostProcessor
 	 */
 	Object applyBeanPostProcessorsBeforeInitialization(Object existingBean, String name)
 			throws BeansException;
@@ -133,6 +142,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @return the bean instance to use, either the original or a wrapped one
 	 * @throws BeansException if any post-processing failed
 	 * @see BeanPostProcessor#postProcessAfterInitialization
+	 * 应用BeanPostProcessor
 	 */
 	Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String name)
 			throws BeansException;

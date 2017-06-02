@@ -44,6 +44,9 @@ import org.springframework.util.StringUtils;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 16 April 2001
+ * bean加载的核心部分，是Spring注册以及加载bean的默认实现
+ *
+ * 是ListableBeanFactory的具体实现，可以当做一个单独的BeanFactory使用，或者作为自定义工厂的父类
  */
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
     implements ConfigurableListableBeanFactory, BeanDefinitionRegistry {
