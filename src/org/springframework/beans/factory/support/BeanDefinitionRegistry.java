@@ -29,12 +29,14 @@ import org.springframework.beans.factory.config.BeanDefinition;
  *
  * @author Juergen Hoeller
  * @since 26.11.2003
+ * 定义对BeanDefinition的各种增删改操作
  */
 public interface BeanDefinitionRegistry {
 
 	/**
 	 * Return the number of beans defined in the registry.
 	 * @return the number of beans defined in the registry
+	 * 返回BeanDefinition的数量
 	 */
 	int getBeanDefinitionCount();
 
@@ -42,6 +44,7 @@ public interface BeanDefinitionRegistry {
 	 * Return the names of all beans defined in this registry.
 	 * @return the names of all beans defined in this registry,
 	 * or an empty array if none defined
+	 * 返回所有BeanDefinition的名字
 	 */
 	String[] getBeanDefinitionNames();
 
@@ -49,6 +52,7 @@ public interface BeanDefinitionRegistry {
 	 * Check if this registry contains a bean definition with the given name.
 	 * @param name the name of the bean to look for
 	 * @return if this bean factory contains a bean definition with the given name
+	 * 是否存在BeanDefinition
 	 */
 	boolean containsBeanDefinition(String name);
 
@@ -59,6 +63,7 @@ public interface BeanDefinitionRegistry {
 	 * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
 	 * if the bean definition cannot be resolved
 	 * @throws BeansException in case of errors
+	 * 获取BeanDefinition
 	 */
 	BeanDefinition getBeanDefinition(String name) throws BeansException;
 
@@ -70,6 +75,7 @@ public interface BeanDefinitionRegistry {
 	 * @throws BeansException if the bean definition is invalid
 	 * @see RootBeanDefinition
 	 * @see ChildBeanDefinition
+	 * 注册BeanDefinition
 	 */
 	void registerBeanDefinition(String name, BeanDefinition beanDefinition)
 			throws BeansException;
@@ -80,6 +86,7 @@ public interface BeanDefinitionRegistry {
 	 * @param name the bean name to check for aliases
 	 * @return the aliases, or an empty array if none
 	 * @throws NoSuchBeanDefinitionException if there's no such bean definition
+	 * 获取Bean的别名
 	 */
 	String[] getAliases(String name) throws NoSuchBeanDefinitionException;
 
@@ -91,6 +98,7 @@ public interface BeanDefinitionRegistry {
 	 * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
 	 * if there is no bean with the given name
 	 * @throws BeansException if the alias is already in use
+	 * 注册Bean的别名
 	 */
 	void registerAlias(String name, String alias) throws BeansException;
 
