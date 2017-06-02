@@ -48,6 +48,8 @@ public interface PlatformTransactionManager {
 	 * describing propagation behavior, isolation level, timeout etc.
 	 * @return transaction status object representing the new or current transaction
 	 * @throws TransactionException in case of lookup, creation, or system errors
+	 * 根据指定的TransactionDefinition返回一个TransactionStatus对象
+	 * TransactionStatus可能代表一个新的或者已经存在的事务
 	 */
 	TransactionStatus getTransaction(TransactionDefinition definition)
 	    throws TransactionException;
@@ -60,6 +62,7 @@ public interface PlatformTransactionManager {
 	 * to take part in the surrounding transaction properly.
 	 * @param status object returned by the getTransaction() method.
 	 * @throws TransactionException in case of commit or system errors
+	 * 提交事务
 	 */
 	void commit(TransactionStatus status) throws TransactionException;
 
@@ -69,6 +72,7 @@ public interface PlatformTransactionManager {
 	 * to take part in the surrounding transaction properly.
 	 * @param status object returned by the getTransaction() method.
 	 * @throws TransactionException in case of system errors
+	 * 回滚
 	 */
 	void rollback(TransactionStatus status) throws TransactionException;
 

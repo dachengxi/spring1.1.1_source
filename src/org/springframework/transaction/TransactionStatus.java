@@ -34,12 +34,15 @@ package org.springframework.transaction;
  * @see org.springframework.transaction.support.TransactionCallback#doInTransaction
  * @see org.springframework.transaction.interceptor.TransactionInterceptor#currentTransactionStatus
  * @see #setRollbackOnly
+ * 表示一个事务的状态
+ * 提供简单的控制事务执行和查询事务状态方法
  */
 public interface TransactionStatus extends SavepointManager {
 
 	/**
 	 * Return if the transaction is new,
 	 * else participating in an existing transaction.
+	 * 返回是否是个新事务
 	 */
 	boolean isNewTransaction();
 
@@ -51,11 +54,13 @@ public interface TransactionStatus extends SavepointManager {
 	 * An alternative way to trigger a rollback is throwing an application exception.
 	 * @see org.springframework.transaction.support.TransactionCallback#doInTransaction
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#rollbackOn
+	 * 设置事务为只回滚
 	 */
 	void setRollbackOnly();
 
 	/**
 	 * Return if the transaction has been set rollback-only.
+	 * 返回是否事务是只回滚
 	 */
 	public boolean isRollbackOnly();
 
