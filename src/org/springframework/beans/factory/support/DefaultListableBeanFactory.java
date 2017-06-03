@@ -282,22 +282,26 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				                                       "Validation of bean definition with name failed", ex);
 			}
 		}
+		//先从缓存中获取
 		Object oldBeanDefinition = this.beanDefinitionMap.get(name);
+		//缓存中存在
 		if (oldBeanDefinition != null) {
+			//不允许覆盖
 			if (!this.allowBeanDefinitionOverriding) {
 				throw new BeanDefinitionStoreException("Cannot register bean definition [" + beanDefinition + "] for bean '" +
 																							 name + "': there's already [" + oldBeanDefinition + "] bound");
 			}
-			else {
+			else {//允许覆盖
 				if (logger.isInfoEnabled()) {
 					logger.info("Overriding bean definition for bean '" + name +
 											"': replacing [" + oldBeanDefinition + "] with [" + beanDefinition + "]");
 				}
 			}
 		}
-		else {
+		else {//缓存中不存在，需要把名字放到List中去
 			this.beanDefinitionNames.add(name);
 		}
+		//放到缓存中
 		this.beanDefinitionMap.put(name, beanDefinition);
 	}
 
