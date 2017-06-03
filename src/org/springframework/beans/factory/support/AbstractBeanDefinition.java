@@ -38,7 +38,7 @@ import org.springframework.util.ClassUtils;
  * @see ChildBeanDefinition
  */
 public abstract class AbstractBeanDefinition implements BeanDefinition {
-
+	//
 	public static final int AUTOWIRE_NO = 0;
 
 	public static final int AUTOWIRE_BY_NAME = AutowireCapableBeanFactory.AUTOWIRE_BY_NAME;
@@ -60,33 +60,33 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
 
 
 	private Object beanClass;
-
+	//是否抽象，对应bean属性abstract
 	private boolean abstractFlag = false;
-
+	//是否单例
 	private boolean singleton = true;
-
+	//是否延迟加载，对应bean属性的lazy-init
 	private boolean lazyInit = false;
-
+	//保存构造函数注入属性，对应bean的constructor-arg
 	private ConstructorArgumentValues constructorArgumentValues;
-
+	//普通属性集合
 	private MutablePropertyValues propertyValues;
-
+	//保存方法重写，记录lookup-method，replaced-method
 	private MethodOverrides methodOverrides = new MethodOverrides();
-
+	//对应bean的init-method
 	private String initMethodName;
-
+	//对应bean的destory-method
 	private String destroyMethodName;
-
+	//对应bean的factory-method
 	private String factoryMethodName;
-	
+	//对应bean的factory-bean
 	private String factoryBeanName;
-
+	//自动注入模式，对应bean属性autowire
 	private int autowireMode = AUTOWIRE_NO;
-
+	//依赖检查
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
-
+	//表示一个bean的实例化依靠另外一个bean先实例化，对应bean属性depend-on
 	private String[] dependsOn;
-
+	//bean描述信息
 	private String resourceDescription;
 
 
