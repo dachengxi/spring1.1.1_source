@@ -30,7 +30,7 @@ import java.net.URL;
  *
  * @author Juergen Hoeller
  * @since 28.12.2003
- * 描述一个资源的接口
+ * 描述一个资源的接口，封装底层资源
  */
 public interface Resource extends InputStreamSource {
 

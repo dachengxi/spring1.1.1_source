@@ -106,6 +106,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * Load bean definitions from the specified XML file.
 	 * @param resource the resource descriptor for the XML file
 	 * @throws BeansException in case of loading or parsing errors
+	 * 从给定的xml资源文件中加载BeanDefinition
 	 */
 	public int loadBeanDefinitions(Resource resource) throws BeansException {
 		if (resource == null) {
@@ -116,6 +117,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			if (logger.isInfoEnabled()) {
 				logger.info("Loading XML bean definitions from " + resource + "");
 			}
+			//下面将Resource解析成Document
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			if (logger.isDebugEnabled()) {
 				logger.debug("Using JAXP implementation [" + factory + "]");
@@ -126,6 +128,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			docBuilder.setEntityResolver(this.entityResolver != null ? this.entityResolver : new BeansDtdResolver());
 			is = resource.getInputStream();
 			Document doc = docBuilder.parse(is);
+			//使用解析的Document和Resource来注册Bean细腻系
 			return registerBeanDefinitions(doc, resource);
 		}
 		catch (ParserConfigurationException ex) {
@@ -159,9 +162,12 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @param doc the DOM document
 	 * @param resource the resource descriptor (for context information)
 	 * @throws BeansException in case of parsing errors
+	 * 注册bean信息
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeansException {
+		//使用XmlBeanDefinitionParser对Document进行解析
 		XmlBeanDefinitionParser parser = (XmlBeanDefinitionParser) BeanUtils.instantiateClass(this.parserClass);
+		//默认使用DefaultXmlBeanDefinitionParser来解析
 		return parser.registerBeanDefinitions(this, doc, resource);
 	}
 

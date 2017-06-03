@@ -74,8 +74,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 	/**
 	 * Create a new DefaultListableBeanFactory with the given parent.
+	 * 使用给定的父bean工厂构造
 	 */
 	public DefaultListableBeanFactory(BeanFactory parentBeanFactory) {
+		//调用父类构造
 		super(parentBeanFactory);
 	}
 
@@ -263,6 +265,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of BeanDefinitionRegistry
 	//---------------------------------------------------------------------
 
+	/**
+	 * 注册BeanDefinition到Bean工厂中去
+	 * @param name the name of the bean instance to register
+	 * @param beanDefinition definition of the bean instance to register
+	 * @throws BeanDefinitionStoreException
+	 */
 	public void registerBeanDefinition(String name, BeanDefinition beanDefinition)
 			throws BeanDefinitionStoreException {
 		if (beanDefinition instanceof AbstractBeanDefinition) {

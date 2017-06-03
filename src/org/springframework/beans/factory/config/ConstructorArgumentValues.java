@@ -64,6 +64,7 @@ public class ConstructorArgumentValues {
 	 * Add argument value for the given index in the constructor argument list.
 	 * @param index the index in the constructor argument list
 	 * @param value the argument value
+	 * 添加index，value到map中，index作为key，vaule封装成ValueHolder作为value
 	 */
 	public void addIndexedArgumentValue(int index, Object value) {
 		this.indexedArgumentValues.put(new Integer(index), new ValueHolder(value));
@@ -73,6 +74,7 @@ public class ConstructorArgumentValues {
 	 * Add argument value for the given index in the constructor argument list.
 	 * @param index the index in the constructor argument list
 	 * @param value the argument value
+	 * 添加index，value，type到map中，index作为key，vaule和type封装成ValueHolder作为value
 	 */
 	public void addIndexedArgumentValue(int index, Object value, String type) {
 		this.indexedArgumentValues.put(new Integer(index), new ValueHolder(value, type));
@@ -107,6 +109,7 @@ public class ConstructorArgumentValues {
 	 * <p>Note: A single generic argument value will just be used once,
 	 * rather than matched multiple times (as of Spring 1.1).
 	 * @param value the argument value
+	 * 将value封装到genericArgumentValues中
 	 */
 	public void addGenericArgumentValue(Object value) {
 		this.genericArgumentValues.add(new ValueHolder(value));
@@ -117,6 +120,7 @@ public class ConstructorArgumentValues {
 	 * <p>Note: A single generic argument value will just be used once,
 	 * rather than matched multiple times (as of Spring 1.1).
 	 * @param value the argument value
+	 * 将value和type封装到genericArgumentValues中
 	 */
 	public void addGenericArgumentValue(Object value, String type) {
 		this.genericArgumentValues.add(new ValueHolder(value, type));

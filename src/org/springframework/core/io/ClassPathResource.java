@@ -44,10 +44,11 @@ import org.springframework.util.StringUtils;
  */
 public class ClassPathResource extends AbstractResource {
 
+	//路径
 	private final String path;
-
+	//类加载器
 	private ClassLoader classLoader;
-
+	//加载资源的类
 	private Class clazz;
 
 	/**
@@ -71,6 +72,7 @@ public class ClassPathResource extends AbstractResource {
 	 * @param path the absolute path within the classpath
 	 * @param classLoader the class loader to load the resource with
 	 * @see java.lang.ClassLoader#getResourceAsStream
+	 * 构造器，指定路径和类加载器
 	 */
 	public ClassPathResource(String path, ClassLoader classLoader) {
 		if (path.startsWith("/")) {
@@ -92,12 +94,14 @@ public class ClassPathResource extends AbstractResource {
 		this.path = path;
 		this.clazz = clazz;
 	}
-
+	//获取输入流
 	public InputStream getInputStream() throws IOException {
 		InputStream is = null;
+		//使用指定的类加载资源
 		if (this.clazz != null) {
 			is = this.clazz.getResourceAsStream(this.path);
 		}
+		//使用类加载器
 		else {
 			ClassLoader cl = this.classLoader;
 			if (cl == null) {
@@ -111,7 +115,7 @@ public class ClassPathResource extends AbstractResource {
 		}
 		return is;
 	}
-
+	//获取url
 	public URL getURL() throws IOException {
 		URL url = null;
 		if (this.clazz != null) {
@@ -131,7 +135,7 @@ public class ClassPathResource extends AbstractResource {
 		}
 		return url;
 	}
-
+	//获取对应的文件
 	public File getFile() throws IOException {
 		URL url = getURL();
 		if (!URL_PROTOCOL_FILE.equals(url.getProtocol())) {
@@ -141,6 +145,11 @@ public class ClassPathResource extends AbstractResource {
 		return new File(URLDecoder.decode(url.getFile()));
 	}
 
+	/**
+	 * 使用相对路径创建资源
+	 * @param relativePath
+	 * @return
+	 */
 	public Resource createRelative(String relativePath) {
 		String pathToUse = StringUtils.applyRelativePath(this.path, relativePath);
 		return new ClassPathResource(pathToUse, this.clazz);

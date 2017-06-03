@@ -121,6 +121,7 @@ public abstract class AbstractBeanFactory implements ConfigurableBeanFactory {
 	 * 构造，需要忽略BeanFactory类型
 	 */
 	public AbstractBeanFactory() {
+		//忽略BeanFactory接口的自动装配功能
 		ignoreDependencyType(BeanFactory.class);
 	}
 
@@ -132,6 +133,7 @@ public abstract class AbstractBeanFactory implements ConfigurableBeanFactory {
 	 */
 	public AbstractBeanFactory(BeanFactory parentBeanFactory) {
 		this();
+		//父bean工厂
 		this.parentBeanFactory = parentBeanFactory;
 	}
 

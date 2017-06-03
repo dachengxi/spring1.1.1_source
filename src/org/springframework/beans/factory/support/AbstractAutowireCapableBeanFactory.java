@@ -112,8 +112,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	/**
 	 * Create a new AbstractAutowireCapableBeanFactory with the given parent.
 	 * @param parentBeanFactory parent bean factory, or null if none
+	 * 使用指定的父bean工厂构造
 	 */
 	public AbstractAutowireCapableBeanFactory(BeanFactory parentBeanFactory) {
+		//调用父类构造
 		super(parentBeanFactory);
 	}
 
