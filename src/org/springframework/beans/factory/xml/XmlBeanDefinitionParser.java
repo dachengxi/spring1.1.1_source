@@ -34,6 +34,7 @@ import org.springframework.core.io.Resource;
  * @author Juergen Hoeller
  * @since 18.12.2003
  * @see XmlBeanDefinitionReader#setParserClass
+ * 解析xml BeanDefinition
  */
 public interface XmlBeanDefinitionParser {
 
@@ -42,11 +43,12 @@ public interface XmlBeanDefinitionParser {
 	 * and register them with the given bean factory.
 	 * @param reader the bean definition reader, containing the bean factory
 	 * to work on and the bean class loader to use. Can also be used to load
-	 * further bean definition files referenced by the given document.
+	 * further bean definition files referenced by the given document.带有BeanFactory
 	 * @param doc the DOM document
 	 * @param resource descriptor of the original XML resource
 	 * (useful for displaying parse errors)
 	 * @throws BeansException in case of parsing errors
+	 * 解析BeanDefinition，并注册到Bean工厂
 	 */
 	int registerBeanDefinitions(BeanDefinitionReader reader, Document doc, Resource resource)
 			throws BeansException;

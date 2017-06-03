@@ -29,6 +29,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
  * @author Juergen Hoeller
  * @since 03.11.2003
  * @see org.springframework.context.support.AbstractApplicationContext#getBeanFactory
+ * BeanFactory配置清单，指定忽略类型以及接口等
  */
 public interface ConfigurableListableBeanFactory
 		extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
@@ -45,6 +46,7 @@ public interface ConfigurableListableBeanFactory
 	 * @throws org.springframework.beans.factory.NoSuchBeanDefinitionException
 	 * if there is no bean with the given name
 	 * @throws BeansException in case of errors
+	 *获取BeanDefinition，允许访问他的属性值和构造器参数值
 	 */
 	BeanDefinition getBeanDefinition(String beanName) throws BeansException;
 
@@ -55,6 +57,7 @@ public interface ConfigurableListableBeanFactory
 	 * if it fails, to avoid dangling resources. In other words, after invocation
 	 * of that method, either all or no singletons at all should be instantiated.
 	 * @throws BeansException if one of the singleton beans could not be created
+	 * 预实例化单例，确保所有的非懒初始化的单例都被初始化
 	 */
 	void preInstantiateSingletons() throws BeansException;
 

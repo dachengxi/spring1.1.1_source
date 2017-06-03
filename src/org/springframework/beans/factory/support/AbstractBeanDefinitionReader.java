@@ -29,19 +29,21 @@ import org.apache.commons.logging.LogFactory;
  * @author Juergen Hoeller
  * @since 11.12.2003
  * @see BeanDefinitionReaderUtils
+ * BeanDefinitionReader的基础实现
  */
 public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader {
 
 	protected final Log logger = LogFactory.getLog(getClass());
-
+	//Bean工厂
 	private final BeanDefinitionRegistry beanFactory;
-
+	//类加载器
 	private ClassLoader beanClassLoader = Thread.currentThread().getContextClassLoader();
 
 
 	/**
 	 * Create a new AbstractBeanDefinitionReader for the given factory.
 	 * @param beanFactory the bean factory to work on
+	 * 构造器
 	 */
 	protected AbstractBeanDefinitionReader(BeanDefinitionRegistry beanFactory) {
 		this.beanFactory = beanFactory;

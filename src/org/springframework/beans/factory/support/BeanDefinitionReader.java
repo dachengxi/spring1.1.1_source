@@ -30,11 +30,14 @@ import org.springframework.core.io.Resource;
  * @author Juergen Hoeller
  * @since 1.1
  * @see org.springframework.core.io.Resource
+ * BeanDefinition 读取器接口
+ * 定义资源文件读取，并转换为BeanDefinition
  */
 public interface BeanDefinitionReader {
 
 	/**
 	 * Return the bean factory to register the bean definitions with.
+	 * 返回BeanFactory
 	 */
 	BeanDefinitionRegistry getBeanFactory();
 
@@ -43,6 +46,7 @@ public interface BeanDefinitionReader {
 	 * <p>Null suggests to not load bean classes but just register bean definitions
 	 * with class names, for example when just registering beans in a registry
 	 * but not actually instantiating them in a factory.
+	 * 返回Bean的ClassLoader
 	 */
 	ClassLoader getBeanClassLoader();
 
@@ -51,6 +55,7 @@ public interface BeanDefinitionReader {
 	 * @param resource the resource descriptor
 	 * @return the number of bean definitions found
 	 * @throws BeansException in case of loading or parsing errors
+	 * 从指定的资源文件中获取BeanDefinition
 	 */
 	int loadBeanDefinitions(Resource resource) throws BeansException;
 

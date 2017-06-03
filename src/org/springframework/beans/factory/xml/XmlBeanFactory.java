@@ -42,9 +42,12 @@ import org.springframework.core.io.Resource;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 15 April 2001
+ * 继承了DefaultListableBeanFactory，对其进行了扩展，主要用于从xml文档中读取BeanDefinition
+ * 对于注册以及获取Bean都是从父类继承的方法去实现
+ * 与父类不同的实现就是增加了XmlBeanDefinitionReader，可以使用该reader对资源文件进行读取和注册
  */
 public class XmlBeanFactory extends DefaultListableBeanFactory {
-
+	//XmlBeanDefinitionReader用来对资源文件进行读取和注册
 	private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
 
 	/**

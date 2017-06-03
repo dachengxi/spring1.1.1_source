@@ -45,7 +45,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * Constant that indicates autowiring bean properties by name.
 	 * @see #autowire
 	 * @see #autowireBeanProperties
-	 * 根据名字自动注入
+	 * 根据名字自动装配
 	 */
 	int AUTOWIRE_BY_NAME = 1;
 
@@ -53,14 +53,14 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * Constant that indicates autowiring bean properties by type.
 	 * @see #autowire
 	 * @see #autowireBeanProperties
-	 * 根据类型自动注入
+	 * 根据类型自动装配
 	 */
 	int AUTOWIRE_BY_TYPE = 2;
 
 	/**
 	 * Constant that indicates autowiring a constructor.
 	 * @see #autowire
-	 * 构造器自动注入
+	 * 构造器自动装配
 	 */
 	int AUTOWIRE_CONSTRUCTOR = 3;
 
@@ -68,7 +68,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * Constant that indicates determining an appropriate autowire strategy
 	 * through introspection of the bean class.
 	 * @see #autowire
-	 * 自动检测使用哪种方式注入
+	 * 自动检测使用哪种方式装配
 	 */
 	int AUTOWIRE_AUTODETECT = 4;
 
@@ -86,7 +86,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @see #AUTOWIRE_BY_TYPE
 	 * @see #AUTOWIRE_CONSTRUCTOR
 	 * @see #AUTOWIRE_AUTODETECT
-	 * 创建一个bean实例，使用给定的类和自动注入策略
+	 * 创建一个bean实例，使用给定的类和自动装配策略
 	 */
 	Object autowire(Class beanClass, int autowireMode, boolean dependencyCheck)
 			throws BeansException;
@@ -99,7 +99,7 @@ public interface AutowireCapableBeanFactory extends BeanFactory {
 	 * @throws BeansException if wiring failed
 	 * @see #AUTOWIRE_BY_NAME
 	 * @see #AUTOWIRE_BY_TYPE
-	 * 自动注入bean的属性
+	 * 自动装配bean的属性
 	 */
 	void autowireBeanProperties(Object existingBean, int autowireMode, boolean dependencyCheck)
 			throws BeansException;

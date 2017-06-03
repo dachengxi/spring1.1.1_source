@@ -47,6 +47,10 @@ import org.springframework.util.StringUtils;
  * bean加载的核心部分，是Spring注册以及加载bean的默认实现
  *
  * 是ListableBeanFactory的具体实现，可以当做一个单独的BeanFactory使用，或者作为自定义工厂的父类
+ *
+ * 继承AbstractAutowireCapableBeanFactory 可以实现自动装配
+ * 实现ConfigurableListableBeanFactory，有BeanFactory的配置清单，指定忽略类型及接口等
+ * 实现BeanDefinitionRegistry，定义了对BeanDefinition的各种增删改操作
  */
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
     implements ConfigurableListableBeanFactory, BeanDefinitionRegistry {

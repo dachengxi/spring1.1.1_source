@@ -44,7 +44,7 @@ import org.springframework.beans.BeansException;
  * @since 16 April 2001
  * @see BeanFactoryUtils
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#registerSingleton
- * 根据各种条件获取bean的配置清淡
+ * 根据各种条件获取bean的配置清单
  */
 public interface ListableBeanFactory extends BeanFactory {
 

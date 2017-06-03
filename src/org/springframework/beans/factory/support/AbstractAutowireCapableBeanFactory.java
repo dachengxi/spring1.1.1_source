@@ -133,7 +133,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	//---------------------------------------------------------------------
 
 	/**
-	 * 自动注入的实现
+	 * 自动装配的实现
 	 * @param beanClass the class of the bean to instantiate 要实例化的bean
 	 * @param autowireMode by name or type, using the constants in this interface 自动注入的类型
 	 * @param dependencyCheck whether to perform a dependency check for objects 依赖检查
@@ -144,7 +144,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	public Object autowire(Class beanClass, int autowireMode, boolean dependencyCheck)
 			throws BeansException {
 		RootBeanDefinition bd = new RootBeanDefinition(beanClass, autowireMode, dependencyCheck);
+		//构造器自动装配
 		if (bd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR) {
+			//先是autowireConstructor，然后获取包装的实例
 			return autowireConstructor(beanClass.getName(), bd).getWrappedInstance();
 		}
 		else {
@@ -423,14 +425,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param beanName name of the bean to autowire by type
 	 * @param mergedBeanDefinition bean definition to update through autowiring
 	 * @return BeanWrapper for the new instance
+	 * 自动装配构造器
 	 */
 	protected BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mergedBeanDefinition)
 			throws BeansException {
-
+		//BeanDefinition中构造器参数值
 		ConstructorArgumentValues cargs = mergedBeanDefinition.getConstructorArgumentValues();
 		ConstructorArgumentValues resolvedValues = new ConstructorArgumentValues();
-
+		//Bean包装
 		BeanWrapperImpl bw = new BeanWrapperImpl();
+		//实例化BeanWrapper，并注册自定义属性编辑器
 		initBeanWrapper(bw);
 
 		int minNrOfArgs = 0;

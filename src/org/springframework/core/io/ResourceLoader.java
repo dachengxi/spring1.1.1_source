@@ -28,7 +28,7 @@ package org.springframework.core.io;
  * @see DefaultResourceLoader
  * @see ResourceEditor
  * @see org.springframework.context.ApplicationContext
- * 资源加载器结构，其实现类可以加载资源
+ * 资源加载器，其实现类可以加载资源，主要用于根据给定的资源文件地址返回对应的Resource
  */
 public interface ResourceLoader {
 
