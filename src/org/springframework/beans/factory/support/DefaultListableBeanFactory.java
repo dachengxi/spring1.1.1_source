@@ -275,6 +275,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			throws BeanDefinitionStoreException {
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
+				//注册前的校验
 				((AbstractBeanDefinition) beanDefinition).validate();
 			}
 			catch (BeanDefinitionValidationException ex) {

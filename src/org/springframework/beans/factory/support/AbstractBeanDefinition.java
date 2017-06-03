@@ -489,6 +489,7 @@ public abstract class AbstractBeanDefinition implements BeanDefinition {
 	/**
 	 * Validate this bean definition.
 	 * @throws BeanDefinitionValidationException in case of validation failure
+	 * 校验BeanDefinition，主要是对methodOverrides是否于工厂方法并存，或者methodOverrides不存在
 	 */
 	public void validate() throws BeanDefinitionValidationException {
 		if (this.lazyInit && !this.singleton) {
