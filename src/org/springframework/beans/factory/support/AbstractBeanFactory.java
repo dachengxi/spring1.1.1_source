@@ -420,6 +420,7 @@ public abstract class AbstractBeanFactory implements ConfigurableBeanFactory {
 	/**
 	 * Return the list of BeanPostProcessors that will get applied
 	 * to beans created with this factory.
+	 * 获取BeanPostProcessor
 	 */
 	public List getBeanPostProcessors() {
 		return beanPostProcessors;

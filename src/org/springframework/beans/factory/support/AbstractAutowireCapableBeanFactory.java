@@ -171,14 +171,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		RootBeanDefinition bd = getMergedBeanDefinition(name, true);
 		applyPropertyValues(name, bd, new BeanWrapperImpl(existingBean), bd.getPropertyValues());
 	}
-
+	//初始化前，应用后处理器
 	public Object applyBeanPostProcessorsBeforeInitialization(Object bean, String name) throws BeansException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Invoking BeanPostProcessors before initialization of bean '" + name + "'");
 		}
 		Object result = bean;
+		//获取，遍历BeanPostProcessor
 		for (Iterator it = getBeanPostProcessors().iterator(); it.hasNext();) {
 			BeanPostProcessor beanProcessor = (BeanPostProcessor) it.next();
+			//调用实现了BeanPostProcessor接口的Bean的postProcessBeforeInitialization方法
 			result = beanProcessor.postProcessBeforeInitialization(result, name);
 			if (result == null) {
 				throw new BeanCreationException(
@@ -188,14 +190,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		return result;
 	}
-
+	//初始化后，调用后处理器
 	public Object applyBeanPostProcessorsAfterInitialization(Object bean, String name) throws BeansException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Invoking BeanPostProcessors after initialization of bean '" + name + "'");
 		}
 		Object result = bean;
+		//获取，遍历BeanPostProcessor
 		for (Iterator it = getBeanPostProcessors().iterator(); it.hasNext();) {
 			BeanPostProcessor beanProcessor = (BeanPostProcessor) it.next();
+			//调用实现了BeanPostProcessor接口的Bean的postProcessAfterInitialization方法
 			result = beanProcessor.postProcessAfterInitialization(result, name);
 			if (result == null) {
 				throw new BeanCreationException(
@@ -303,9 +307,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 				((BeanFactoryAware) bean).setBeanFactory(this);
 			}
-
+			//初始化前，应用后处理器
 			bean = applyBeanPostProcessorsBeforeInitialization(bean, beanName);
+			//调用初始化方法，自定义的初始化方法，也就是init-method或者Bean实现了InitializingBean接口
 			invokeInitMethods(beanName, mergedBeanDefinition, bean);
+			//初始化后，应用后处理器
 			bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 		}
 		catch (BeanCreationException ex) {
@@ -1104,18 +1110,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param bean new bean instance we may need to initialize
 	 * @param beanName the bean has in the factory. Used for debug output.
 	 * @throws Throwable if thrown by init methods or by the invocation process
+	 * 调用自定义的初始化方法
 	 */
 	protected void invokeInitMethods(String beanName, RootBeanDefinition mergedBeanDefinition, Object bean)
 			throws Throwable {
-
+		//实现了InitializingBean接口
 		if (bean instanceof InitializingBean) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Invoking afterPropertiesSet() on bean with beanName '" + beanName + "'");
 			}
+			//调用afterPropertiesSet方法
 			((InitializingBean) bean).afterPropertiesSet();
 		}
-
+		//init-method
 		if (mergedBeanDefinition.getInitMethodName() != null) {
+			//调用自定义初始化方法
 			invokeCustomInitMethod(beanName, bean, mergedBeanDefinition.getInitMethodName(),
 					mergedBeanDefinition.getResourceDescription());
 		}
@@ -1125,6 +1134,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Invoke the specified custom init method on the given bean.
 	 * <p>Can be overridden in subclasses for custom resolution of init
 	 * methods with arguments.
+	 * 调用自定义初始化方法
 	 */
 	protected void invokeCustomInitMethod(String beanName, Object bean, String initMethodName,
 			String resourceDescription) throws Throwable {
@@ -1134,6 +1144,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					"' on bean with beanName '" + beanName + "'");
 		}
 		try {
+			//找到初始化方法
 			Method initMethod = BeanUtils.findMethod(bean.getClass(), initMethodName, null);
 			if (initMethod == null) {
 				throw new NoSuchMethodException("Couldn't find an init method named '" + initMethodName +
@@ -1142,6 +1153,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (!Modifier.isPublic(initMethod.getModifiers())) {
 				initMethod.setAccessible(true);
 			}
+			//调用初始化方法
 			initMethod.invoke(bean, null);
 		}
 		catch (InvocationTargetException ex) {
