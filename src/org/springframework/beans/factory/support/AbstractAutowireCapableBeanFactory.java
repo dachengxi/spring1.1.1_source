@@ -331,6 +331,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Register bean as dependent on specified "dependsOn" beans.
 		// This information is used on shutdown, to destroy dependent beans
 		// before the beans that they depend on.
+		//注册dependsOn，注册依赖的bwan
 		if (mergedBeanDefinition.isSingleton()) {
 			String[] dependsOn = mergedBeanDefinition.getDependsOn();
 			if (dependsOn != null) {
