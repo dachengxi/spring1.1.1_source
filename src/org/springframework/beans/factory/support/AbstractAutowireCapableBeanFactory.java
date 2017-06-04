@@ -274,10 +274,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				instanceWrapper = new BeanWrapperImpl(beanInstance);
 				initBeanWrapper(instanceWrapper);
 			}
+			//获取实例化之后的bean
 			bean = instanceWrapper.getWrappedInstance();
 
 			// Eagerly cache singletons to be able to resolve circular references
 			// even when triggered by lifecycle interfaces like BeanFactoryAware.
+			//允许早期缓存，并且是单例的，就先缓存了。为了解决循环依赖
 			if (allowEagerCaching && mergedBeanDefinition.isSingleton()) {
 				addSingleton(beanName, bean);
 				eagerlyCached = true;
@@ -285,7 +287,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 			// initialize bean
 			errorMessage = "Initialization of bean failed";
-
+			//对bean进行填充，将各个属性值注入，可能存在依赖于其他bean的属性，会递归初始依赖的bean
 			populateBean(beanName, mergedBeanDefinition, instanceWrapper);
 
 			if (bean instanceof BeanNameAware) {
@@ -669,10 +671,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param beanName name of the bean
 	 * @param mergedBeanDefinition the bean definition for the bean
 	 * @param bw BeanWrapper with bean instance
+	 * 填充bean的属性值
 	 */
 	protected void populateBean(String beanName, RootBeanDefinition mergedBeanDefinition, BeanWrapper bw)
 			throws BeansException {
-
+		//获取保存在BeanDefinition中的属性值
 		PropertyValues pvs = mergedBeanDefinition.getPropertyValues();
 
 		if (mergedBeanDefinition.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME ||
@@ -680,19 +683,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			MutablePropertyValues mpvs = new MutablePropertyValues(pvs);
 
 			// add property values based on autowire by name if it's applied
+			//根据名称自动注入
 			if (mergedBeanDefinition.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_NAME) {
 				autowireByName(beanName, mergedBeanDefinition, bw, mpvs);
 			}
 
 			// add property values based on autowire by type if it's applied
+			//根据类型自动注入
 			if (mergedBeanDefinition.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_BY_TYPE) {
 				autowireByType(beanName, mergedBeanDefinition, bw, mpvs);
 			}
 
 			pvs = mpvs;
 		}
-
+		//依赖检查
 		dependencyCheck(beanName, mergedBeanDefinition, bw, pvs);
+		//将属性应用到bean中
 		applyPropertyValues(beanName, mergedBeanDefinition, bw, pvs);
 	}
 
@@ -704,18 +710,22 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param mergedBeanDefinition bean definition to update through autowiring
 	 * @param bw BeanWrapper from which we can obtain information about the bean
 	 * @param pvs the PropertyValues to register wired objects with
+	 * 根据名称自动注入
 	 */
 	protected void autowireByName(
 			String beanName, RootBeanDefinition mergedBeanDefinition, BeanWrapper bw, MutablePropertyValues pvs)
 			throws BeansException {
-
+		//需要依赖注入的属性
 		String[] propertyNames = unsatisfiedObjectProperties(mergedBeanDefinition, bw);
 		for (int i = 0; i < propertyNames.length; i++) {
 			String propertyName = propertyNames[i];
+			//包含bean
 			if (containsBean(propertyName)) {
+				//递归初始化相关bean
 				Object bean = getBean(propertyName);
 				pvs.addPropertyValue(propertyName, bean);
 				if (mergedBeanDefinition.isSingleton()) {
+					//注册依赖
 					registerDependentBean(propertyName, beanName);
 				}
 				if (logger.isDebugEnabled()) {
@@ -742,22 +752,26 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param mergedBeanDefinition bean definition to update through autowiring
 	 * @param bw BeanWrapper from which we can obtain information about the bean
 	 * @param pvs the PropertyValues to register wired objects with
+	 * 根据类型自动注入
 	 */
 	protected void autowireByType(
 			String beanName, RootBeanDefinition mergedBeanDefinition, BeanWrapper bw, MutablePropertyValues pvs)
 			throws BeansException {
-
+		//获取需要依赖注入的属性
 		String[] propertyNames = unsatisfiedObjectProperties(mergedBeanDefinition, bw);
 		for (int i = 0; i < propertyNames.length; i++) {
 			String propertyName = propertyNames[i];
 			// look for a matching type
+			//需要的类型
 			Class requiredType = bw.getPropertyDescriptor(propertyName).getPropertyType();
+			//根据类型查找匹配的bean
 			Map matchingBeans = findMatchingBeans(requiredType);
 			if (matchingBeans != null && matchingBeans.size() == 1) {
 				String autowiredBeanName = (String) matchingBeans.keySet().iterator().next();
 				Object autowiredBean = matchingBeans.values().iterator().next();
 				pvs.addPropertyValue(propertyName, autowiredBean);
 				if (mergedBeanDefinition.isSingleton()) {
+					//注册依赖
 					registerDependentBean(autowiredBeanName, beanName);
 				}
 				if (logger.isDebugEnabled()) {
@@ -787,6 +801,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * if desired. Dependency checks can be objects (collaborating beans),
 	 * simple (primitives and String), or all (both).
 	 * @param beanName name of the bean
+	 * 依赖检查
 	 */
 	protected void dependencyCheck(
 			String beanName, RootBeanDefinition mergedBeanDefinition, BeanWrapper bw, PropertyValues pvs)
@@ -822,13 +837,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * factory. Does not include simple properties like primitives or Strings.
 	 * @return an array of object-type property names that are unsatisfied
 	 * @see org.springframework.beans.BeanUtils#isSimpleProperty
+	 * 需要进行依赖注入的属性
 	 */
 	protected String[] unsatisfiedObjectProperties(RootBeanDefinition mergedBeanDefinition, BeanWrapper bw) {
 		Set result = new TreeSet();
+		//需要忽略的类型
 		Set ignoreTypes = getIgnoredDependencyTypes();
 		PropertyDescriptor[] pds = bw.getPropertyDescriptors();
 		for (int i = 0; i < pds.length; i++) {
 			String name = pds[i].getName();
+			//存在写方法
+			//不是简单类型的属性
+			//不存在忽略类型中
+			//属性值为null
 			if (pds[i].getWriteMethod() != null &&
 			    !BeanUtils.isSimpleProperty(pds[i].getPropertyType()) &&
 			    !ignoreTypes.contains(pds[i].getPropertyType()) &&
@@ -846,6 +867,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param beanName bean name passed for better exception information
 	 * @param bw BeanWrapper wrapping the target object
 	 * @param pvs new property values
+	 * 将属性值应用到bean中
 	 */
 	protected void applyPropertyValues(
 			String beanName, RootBeanDefinition mergedBeanDefinition, BeanWrapper bw, PropertyValues pvs)
@@ -857,6 +879,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		MutablePropertyValues deepCopy = new MutablePropertyValues(pvs);
 		PropertyValue[] pvals = deepCopy.getPropertyValues();
+		//遍历属性，将属性转换为对应类的对应属性的类型
 		for (int i = 0; i < pvals.length; i++) {
 			Object value = resolveValueIfNecessary(
 					beanName, mergedBeanDefinition, pvals[i].getName(), pvals[i].getValue());
@@ -1060,6 +1083,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * to be destroyed before the given bean is destroyed.
 	 * @param beanName the name of the bean
 	 * @param dependentBeanName the name of the dependent bean
+	 * 注册依赖，加入到dependentBeanMap中
 	 */
 	protected final void registerDependentBean(String beanName, String dependentBeanName) {
 		synchronized (this.dependentBeanMap) {
