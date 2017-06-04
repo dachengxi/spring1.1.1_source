@@ -214,6 +214,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	/**
 	 * Delegates to full createBean version with allowEagerCaching=true.
 	 * @see #createBean(String, RootBeanDefinition, Object[], boolean)
+	 * 创建Bean
 	 */
 	protected Object createBean(String beanName, RootBeanDefinition mergedBeanDefinition, Object[] args)
 	    throws BeansException {
@@ -231,6 +232,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * This parameter should be null otherwise.
 	 * @return a new instance of the bean
 	 * @throws BeansException in case of errors
+	 * 创建Bean
 	 */
 	protected Object createBean(
 			String beanName, RootBeanDefinition mergedBeanDefinition, Object[] args, boolean allowEagerCaching)
@@ -240,7 +242,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			logger.debug("Creating instance of bean '" + beanName +
 					"' with merged definition [" + mergedBeanDefinition + "]");
 		}
-
+		//存在依赖，需要递归实例化依赖的bean
 		if (mergedBeanDefinition.getDependsOn() != null) {
 			for (int i = 0; i < mergedBeanDefinition.getDependsOn().length; i++) {
 				// guarantee initialization of beans that the current one depends on
@@ -256,16 +258,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			// instantiate bean
 			errorMessage = "Instantiation of bean failed";
-
+			//工厂方法不为空，则使用工厂方法初始化策略，可以是配置文件中存在factory-method
 			if (mergedBeanDefinition.getFactoryMethodName() != null)  {
 				instanceWrapper = instantiateUsingFactoryMethod(beanName, mergedBeanDefinition, args);
 			}
 			else if (mergedBeanDefinition.getResolvedAutowireMode() == RootBeanDefinition.AUTOWIRE_CONSTRUCTOR ||
 					mergedBeanDefinition.hasConstructorArgumentValues() )  {
+				//构造函数注入
 				instanceWrapper = autowireConstructor(beanName, mergedBeanDefinition);
 			}
 			else {
 				// use no-arg constructor
+				//使用默认构造方法注入，也就是无参构造
 				Object beanInstance = this.instantiationStrategy.instantiate(mergedBeanDefinition, beanName, this);
 				instanceWrapper = new BeanWrapperImpl(beanInstance);
 				initBeanWrapper(instanceWrapper);
@@ -340,18 +344,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * to match with the parameters. We don't have the types attached to constructor args,
 	 * so trial and error is the only way to go here. The args array may contain argument
 	 * values passed in programmatically via the overloaded getBean() method.
+	 * 使用工厂方法初始化策略来实例化Bean
 	 */
 	protected BeanWrapper instantiateUsingFactoryMethod(
 			String beanName, RootBeanDefinition mergedBeanDefinition, Object[] args) throws BeansException {
-
+		//获取构造器参数
 		ConstructorArgumentValues cargs = mergedBeanDefinition.getConstructorArgumentValues();
 		ConstructorArgumentValues resolvedValues = new ConstructorArgumentValues();
 		int expectedArgCount = 0;
 
 		// We don't have arguments passed in programmatically, so we need to resolve the
 		// arguments specified in the constructor arguments held in the bean definition.
+		//代码中没有传递参数，需要在BeanDefinition中来找构造器参数
 		if (args == null) {
 			expectedArgCount = cargs.getArgumentCount();
+			//寻找构造器参数
 			resolveConstructorArguments(beanName, mergedBeanDefinition, cargs, resolvedValues);
 		}
 		else {
@@ -360,21 +367,25 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		BeanWrapperImpl bw = new BeanWrapperImpl();
+		//初始化BeanWrapper
 		initBeanWrapper(bw);
 
 		boolean isStatic = true;
 		Class factoryClass = null;
 		if (mergedBeanDefinition.getFactoryBeanName() != null) {
 			// It's an instance method on the factory bean's class.
+			//是实例化工厂方法
 			factoryClass = getBean(mergedBeanDefinition.getFactoryBeanName()).getClass();
 			isStatic = false;
 		}
 		else {
 			// It's a static factory method on the bean class.
+			//静态工厂方法
 			factoryClass = mergedBeanDefinition.getBeanClass();
 		}
 
 		// try all methods with this name to see if they match constructor arguments
+		//遍历得到的工厂类的方法
 		for (int i = 0; i < factoryClass.getMethods().length; i++) {
 			Method factoryMethod = factoryClass.getMethods()[i];
 			if (Modifier.isStatic(factoryMethod.getModifiers()) == isStatic &&
@@ -396,6 +407,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 
 				// If we get here, we found a factory method
+				//找到了工厂方法，实例化
 				Object beanInstance =
 						this.instantiationStrategy.instantiate(mergedBeanDefinition, beanName, this, factoryMethod, args);
 
@@ -441,10 +453,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		int minNrOfArgs = 0;
 		if (cargs != null) {
+			//能解析到的参数个数
 			minNrOfArgs = resolveConstructorArguments(beanName, mergedBeanDefinition, cargs, resolvedValues);
 		}
-
+		//构造器
 		Constructor[] constructors = mergedBeanDefinition.getBeanClass().getDeclaredConstructors();
+		//排序
 		Arrays.sort(constructors, new Comparator() {
 			public int compare(Object o1, Object o2) {
 				Constructor c1 = (Constructor) o1;
@@ -500,7 +514,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throw new BeanCreationException(
 					mergedBeanDefinition.getResourceDescription(), beanName, "Could not resolve matching constructor");
 		}
-
+		//解析完 构造参数之后，实例化，不是使用反射直接实例化，而是使用实例化策略进行实例化
 		Object beanInstance = this.instantiationStrategy.instantiate(
 				mergedBeanDefinition, beanName, this, constructorToUse, argsToUse);
 		bw.setWrappedInstance(beanInstance);
@@ -514,6 +528,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Resolve the constructor arguments for this bean into the resolvedValues object.
 	 * This may involve looking up other beans.
 	 * This method is also used for handling invocations of static factory methods.
+	 * 寻找构造器参数
 	 */
 	private int resolveConstructorArguments(
 			String beanName, RootBeanDefinition mergedBeanDefinition,
@@ -521,6 +536,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		int minNrOfArgs;
 		minNrOfArgs = cargs.getArgumentCount();
+		//Index 参数
 		for (Iterator it = cargs.getIndexedArgumentValues().entrySet().iterator(); it.hasNext();) {
 			Map.Entry entry = (Map.Entry) it.next();
 			int index = ((Integer) entry.getKey()).intValue();
@@ -539,6 +555,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					resolveValueIfNecessary(beanName, mergedBeanDefinition, argName, valueHolder.getValue());
 			resolvedValues.addIndexedArgumentValue(index, resolvedValue, valueHolder.getType());
 		}
+		//普通的参数
 		for (Iterator it = cargs.getGenericArgumentValues().iterator(); it.hasNext();) {
 			ConstructorArgumentValues.ValueHolder valueHolder =
 					(ConstructorArgumentValues.ValueHolder) it.next();

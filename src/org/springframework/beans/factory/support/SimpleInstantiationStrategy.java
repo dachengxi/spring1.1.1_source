@@ -67,9 +67,11 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	public Object instantiate(
 			RootBeanDefinition beanDefinition, String beanName, BeanFactory owner,
 			Constructor ctor, Object[] args) {
+		//没有需要动态改变的方法，没有需要覆盖或者替换的方法，使用反射
 		if (beanDefinition.getMethodOverrides().isEmpty()) {
 			return BeanUtils.instantiateClass(ctor, args);
 		}
+		//如果有需要覆盖或者替换的方法，使用CGLIB进行动态代理，由子类实现
 		else {
 			return instantiateWithMethodInjection(beanDefinition, beanName, owner, ctor, args);
 		}

@@ -163,10 +163,10 @@ public abstract class AbstractBeanFactory implements ConfigurableBeanFactory {
 	 * 根据给定的名字获取Bean
 	 */
 	public Object getBean(String name, Object[] args) throws BeansException {
-		//获取Bean名字
+		//提取对应的Bean名字
 		String beanName = transformedBeanName(name);
 		// eagerly check singleton cache for manually registered singletons
-		//早期检查单例缓存
+		//早期检查单例缓存，为了避免循环依赖
 		Object sharedInstance = this.singletonCache.get(beanName);
 		//缓存中存在
 		if (sharedInstance != null) {
@@ -177,7 +177,7 @@ public abstract class AbstractBeanFactory implements ConfigurableBeanFactory {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Returning cached instance of singleton bean '" + beanName + "'");
 			}
-			//获取Bean
+			//获取Bean，返回对应的实例
 			return getObjectForSharedInstance(name, sharedInstance);
 		}
 		else {//缓存中不存在，需要创建bean，并加入缓存
@@ -531,7 +531,7 @@ public abstract class AbstractBeanFactory implements ConfigurableBeanFactory {
 	 * Initialize the given BeanWrapper with the custom editors registered
 	 * with this factory.
 	 * @param bw the BeanWrapper to initialize
-	 * 实例化BeanWrapper
+	 * 初始化BeanWrapper
 	 */
 	protected void initBeanWrapper(BeanWrapper bw) {
 		for (Iterator it = this.customEditors.keySet().iterator(); it.hasNext();) {
@@ -588,15 +588,18 @@ public abstract class AbstractBeanFactory implements ConfigurableBeanFactory {
 		// If it's a FactoryBean, we use it to create a bean instance, unless the
 		// caller actually wants a reference to the factory.
 		//FactoryBean类型需要处理，普通类型不用处理
+		//FactoryBean类型的需要调用FactoryBean的getObject方法获取实例
 		if (beanInstance instanceof FactoryBean) {
+			//不是以&开头的
 			if (!isFactoryDereference(name)) {
 				// return bean instance from factory
+				//这时就是一个FactoryBean
 				FactoryBean factory = (FactoryBean) beanInstance;
 				if (logger.isDebugEnabled()) {
 					logger.debug("Bean with name '" + beanName + "' is a factory bean");
 				}
 				try {
-					//工厂类bean的实例
+					//工厂类bean的实例，使用getObject获取
 					beanInstance = factory.getObject();
 				}
 				catch (Exception ex) {
