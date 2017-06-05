@@ -88,6 +88,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	 * Implementation of InvocationHandler.invoke.
 	 * Callers will see exactly the exception thrown by the target, unless a hook
 	 * method throws an exception.
+	 * 调用真实方法的时候，实际上是调用此方法
 	 */
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 	
@@ -110,7 +111,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 				// This class implements the equals() method itself
 				return equals(args[0]) ? Boolean.TRUE : Boolean.FALSE;
 			}
-			else if (Advised.class == method.getDeclaringClass()) {
+			else if (Advised.class == method.getDeclaringClass()) {//Advised类型直接使用反射调用
 				// Service invocations on ProxyConfig with the proxy config
 				return AopProxyUtils.invokeJoinpointUsingReflection(this.advisedSupport, method, args);
 			}
@@ -131,6 +132,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 			}
 		
 			// Get the interception chain for this method
+			//获取当前方法的连接器链
 			List chain = this.advisedSupport.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this.advisedSupport, proxy, method, targetClass);
 			

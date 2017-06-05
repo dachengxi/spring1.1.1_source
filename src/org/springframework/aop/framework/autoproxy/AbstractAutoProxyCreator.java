@@ -203,6 +203,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyConfig
 	 * identified as one to proxy by the subclass.
 	 * @see #getAdvicesAndAdvisorsForBean
 	 * 如果子类确定bean需要被代理，就创建一个代理
+	 * 先处理target和interceptor，然后使用ProxyFactory进行处理，过程和手动编写ProxyFactory一样
 	 */
 	public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
 		// Check for special cases. We don't want to try to autoproxy a part of the autoproxying

@@ -82,7 +82,11 @@ import org.springframework.core.OrderComparator;
  * @see org.aopalliance.intercept.MethodInterceptor
  * @see org.springframework.aop.framework.Advised
  * @see org.springframework.aop.target.SingletonTargetSource
- * 是一个工厂Bean
+ * 是一个工厂Bean，代理工厂bean
+ *
+ * 工厂Bean类型的bean，在getBean的时候，会使用工厂bean的getObject方法来获取实例，AOP就是在这里做的
+ *
+ * 实现了BeanFactoryAware接口，可以在BeanFactory创建之后获取到BeanFactory的
  *
  */
 public class ProxyFactoryBean extends AdvisedSupport
@@ -147,6 +151,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 	/**
 	 * Set the names of the interfaces we're proxying. If no interface
 	 * is given, a CGLIB for the actual class will be created.
+	 * 设置我们要代理的接口
 	 */
 	public void setProxyInterfaces(String[] interfaceNames) throws ClassNotFoundException {
 		Class[] interfaces = AopUtils.toInterfaceArray(interfaceNames);
@@ -166,6 +171,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 	 * @see org.springframework.aop.Advisor
 	 * @see org.aopalliance.aop.Advice
 	 * @see org.springframework.aop.target.SingletonTargetSource
+	 * 设置拦截器
 	 */
 	public void setInterceptorNames(String[] interceptorNames) {
 		this.interceptorNames = interceptorNames;
@@ -224,6 +230,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 	 * @return Object a fresh AOP proxy reflecting the current
 	 * state of this factory
 	 * 返回一个代理，这个方法将创建一个包装了目标对象的AOP代理
+	 * 工厂Bean类型的bean，在getBean方法调用的时候，会使用工厂Bean的getObject方法
 	 */
 	public Object getObject() throws BeansException {
 		//如果是单例，返回单例实例，如果不是单例，创建一个原型实例返回
@@ -306,7 +313,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 			if (logger.isDebugEnabled()) {
 				logger.debug("Configuring advisor or advice '" + name + "'");
 			}
-
+			//以 * 结尾
 			if (name.endsWith(GLOBAL_SUFFIX)) {
 				if (!(this.beanFactory instanceof ListableBeanFactory)) {
 					throw new AopConfigException(
@@ -404,6 +411,7 @@ public class ProxyFactoryBean extends AdvisedSupport
 
 	/**
 	 * Add all global interceptors and pointcuts.
+	 * 为beanFactory中所有以prefix开头的添加Advisor
 	 */
 	private void addGlobalAdvisor(ListableBeanFactory beanFactory, String prefix) {
 		String[] globalAdvisorNames = BeanFactoryUtils.beanNamesIncludingAncestors(beanFactory, Advisor.class);

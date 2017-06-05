@@ -103,6 +103,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 	/**
 	 * No arg constructor to allow use as a JavaBean.
+	 * 无参构造
 	 */
 	public AdvisedSupport() {
 		initDefaultAdvisorChainFactory();
@@ -111,6 +112,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/**
 	 * Create a DefaultProxyConfig with the given parameters.
 	 * @param interfaces the proxied interfaces
+	 * 使用需要代理的接口
 	 */
 	public AdvisedSupport(Class[] interfaces) {
 		this();

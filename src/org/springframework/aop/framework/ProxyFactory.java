@@ -26,11 +26,13 @@ import org.springframework.aop.support.AopUtils;
  * AOP proxies in code.
  * @since 14-Mar-2003
  * @author Rod Johnson
+ * AOP代理工厂，一般使用编程的方式
  */
 public class ProxyFactory extends AdvisedSupport {
 
 	/**
 	 * Create a new ProxyFactory.
+	 * 空构造
 	 */
 	public ProxyFactory() {
 	}
@@ -38,6 +40,7 @@ public class ProxyFactory extends AdvisedSupport {
 	/**
 	 * Create a new ProxyFactory.
 	 * Proxy all interfaces of the given target.
+	 * 指定target
 	 */
 	public ProxyFactory(Object target) throws AopConfigException {
 		if (target == null) {
@@ -50,6 +53,7 @@ public class ProxyFactory extends AdvisedSupport {
 	/**
 	 * Create a new ProxyFactory.
 	 * No target, only interfaces. Must add interceptors.
+	 * 指定拦截器接口
 	 */
 	public ProxyFactory(Class[] interfaces) {
 		setInterfaces(interfaces);
@@ -60,9 +64,12 @@ public class ProxyFactory extends AdvisedSupport {
 	 * Can be called repeatedly. Effect will vary if we've added
 	 * or removed interfaces. Can add and remove "interceptors"
 	 * @return Object
+	 * 调用bean的时候，需要调用此方法获取
 	 */
 	public Object getProxy() {
+		//创建aop代理
 		AopProxy proxy = createAopProxy();
+		//返回代理
 		return proxy.getProxy();
 	}
 
@@ -74,6 +81,7 @@ public class ProxyFactory extends AdvisedSupport {
 	 * @param proxyInterface the interface that the proxy should implement
 	 * @param interceptor the interceptor that the proxy should invoke
 	 * @return the new proxy
+	 * 指定代理接口和拦截器获取代理
 	 */
 	public static Object getProxy(Class proxyInterface, Interceptor interceptor) {
 		ProxyFactory proxyFactory = new ProxyFactory();
