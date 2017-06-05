@@ -41,6 +41,8 @@ import org.springframework.beans.BeansException;
  * BeanNameAutoProxyCreater也是，可以对其他bean进行事务包装或者用其他proxy进行包装
  *
  * BeanFactory后处理器还能用来添加自定义的editor
+ *
+ * 会在实例化任何bean之前，获得bean的配置信息，就可以正确解析bean文件中的变量引用等
  */
 public interface BeanFactoryPostProcessor {
 

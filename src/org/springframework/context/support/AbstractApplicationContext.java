@@ -193,11 +193,13 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * implementation cannot publish events.
 	 * @param event event to publish (may be application-specific or a
 	 * standard framework event)
+	 * 给所有监听器发布消息
 	 */
 	public void publishEvent(ApplicationEvent event) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Publishing event in context [" + getDisplayName() + "]: " + event.toString());
 		}
+		//应用消息广播器，进行广播
 		this.applicationEventMulticaster.multicastEvent(event);
 		if (this.parent != null) {
 			this.parent.publishEvent(event);
@@ -231,25 +233,35 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * configuration was invalid or couldn't be found, or if configuration
 	 * has already been loaded and reloading is forbidden
 	 * @throws BeansException if the bean factory could not be initialized
+	 * 加载或者重新加载配置
 	 */
 	public void refresh() throws BeansException {
 		this.startupTime = System.currentTimeMillis();
 
 		// tell subclass to refresh the internal bean factory
+		//子类需要实现此方法，用来执行真正的加载配置，初始化BeanFactory，进行xml文件读取
 		refreshBeanFactory();
+		//子类实现，用来得到bean工厂
 		ConfigurableListableBeanFactory beanFactory = getBeanFactory();
 
 		// configure the bean factory with context semantics
+		//注册自定义编辑器
 		beanFactory.registerCustomEditor(Resource.class, new ResourceEditor(this));
 		beanFactory.registerCustomEditor(InputStream.class, new InputStreamEditor(new ResourceEditor(this)));
+		//添加BeanPostProcessor
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
+		//需要忽略的依赖类型
 		beanFactory.ignoreDependencyType(ResourceLoader.class);
 		beanFactory.ignoreDependencyType(ApplicationContext.class);
 
 		// allows post-processing of the bean factory in context subclasses
+		//对于BeanFactory的后处理，需要子类实现，子类用来做一些额外处理
 		postProcessBeanFactory(beanFactory);
 
 		// invoke factory processors registered with the context instance
+		//调用BeanFactory后处理器的postProcessBeanFactory方法
+		//会在实例化任何bean之前，获得bean的配置信息，就可以正确解析bean文件中的变量引用等
+		//PropertyResourceConfigurer，PropertyPlaceHolderConfigurer都是
 		for (Iterator it = getBeanFactoryPostProcessors().iterator(); it.hasNext();) {
 			BeanFactoryPostProcessor factoryProcessor = (BeanFactoryPostProcessor) it.next();
 			factoryProcessor.postProcessBeanFactory(beanFactory);
@@ -263,27 +275,35 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 
 		// invoke factory processors registered as beans in the context
+		//调用BeanFactory的后处理器，这里是处理实现了BeanFactoryPostProcessor接口的Bean
 		invokeBeanFactoryPostProcessors();
 
 		// register bean processor that intercept bean creation
+		//注册BeanPostProcessor，拦截Bean创建的Bean处理器，只是注册，真正调用是在getBean的时候
 		registerBeanPostProcessors();
 
 		// initialize message source for this context
+		//为上下文初始化Message源，用于国际化处理
 		initMessageSource();
 
 		// initialize event multicaster for this context
+		//初始化应用消息广播器
 		initApplicationEventMulticaster();
 
 		// initialize other special beans in specific context subclasses
+		//初始化其他bean，子类来实现
 		onRefresh();
 
 		// check for listener beans and register them
+		//在bean中查找Listener类型的Bean，注册到消息广播器中
 		refreshListeners();
 
 		// instantiate singletons this late to allow them to access the message source
+		//预实例化单例，确保所有的非懒初始化的单例都被初始化
 		beanFactory.preInstantiateSingletons();
 
 		// last step: publish corresponding event
+		//刷新过程完成了，发布ContextRefreshEvent事件通知别人
 		publishEvent(new ContextRefreshedEvent(this));
 	}
 
@@ -302,6 +322,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Instantiate and invoke all registered BeanFactoryPostProcessor beans,
 	 * respecting explicit order if given.
 	 * Must be called before singleton instantiation.
+	 * 调用BeanFactoryPostProcessors
 	 */
 	private void invokeBeanFactoryPostProcessors() throws BeansException {
 		String[] beanNames = getBeanDefinitionNames(BeanFactoryPostProcessor.class);
@@ -320,6 +341,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Instantiate and invoke all registered BeanPostProcessor beans,
 	 * respecting explicit order if given.
 	 * <p>Must be called before any instantiation of application beans.
+	 * 注册BeanPostProcessor
 	 */
 	private void registerBeanPostProcessors() throws BeansException {
 		String[] beanNames = getBeanDefinitionNames(BeanPostProcessor.class);
@@ -361,6 +383,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Initialize the ApplicationEventMulticaster.
 	 * Use SimpleApplicationEventMulticaster if none defined in the context.
 	 * @see org.springframework.context.event.SimpleApplicationEventMulticaster
+	 * 初始化应用消息广播器
 	 */
 	private void initApplicationEventMulticaster() throws BeansException {
 		try {
@@ -369,6 +392,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 		catch (NoSuchBeanDefinitionException ex) {
 			logger.info("No ApplicationEventMulticaster found for context [" + getDisplayName() + "]: using default");
+			//没有找到，使用默认的简单应用消息广播器
 			this.applicationEventMulticaster = new SimpleApplicationEventMulticaster();
 		}
 	}
@@ -386,13 +410,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/**
 	 * Add beans that implement ApplicationListener as listeners.
 	 * Doesn't affect other listeners, which can be added without being beans.
+	 * 在bean中查找ApplicationListener类型的Bean，注册到消息广播器中
 	 */
 	private void refreshListeners() throws BeansException {
 		logger.info("Refreshing listeners");
+		//查找ApplicationListener类型的Bean
 		Collection listeners = getBeansOfType(ApplicationListener.class, true, false).values();
 		logger.debug("Found " + listeners.size() + " listeners in bean factory");
+		//遍历每个ApplicationListener，然后添加到广播器中
 		for (Iterator it = listeners.iterator(); it.hasNext();) {
 			ApplicationListener listener = (ApplicationListener) it.next();
+			//添加监听器
 			addListener(listener);
 			if (logger.isInfoEnabled()) {
 				logger.info("Application listener [" + listener + "] added");

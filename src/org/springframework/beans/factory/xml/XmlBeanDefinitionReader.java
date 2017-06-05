@@ -128,7 +128,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			docBuilder.setEntityResolver(this.entityResolver != null ? this.entityResolver : new BeansDtdResolver());
 			is = resource.getInputStream();
 			Document doc = docBuilder.parse(is);
-			//使用解析的Document和Resource来注册Bean细腻系
+			//使用解析的Document和Resource来注册Bean信息
 			return registerBeanDefinitions(doc, resource);
 		}
 		catch (ParserConfigurationException ex) {

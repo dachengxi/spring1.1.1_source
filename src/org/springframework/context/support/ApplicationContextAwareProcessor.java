@@ -39,6 +39,7 @@ import org.springframework.context.ResourceLoaderAware;
  * @since 10.10.2003
  * @see org.springframework.context.ApplicationContextAware
  * @see org.springframework.context.support.AbstractApplicationContext#refresh
+ * 实现了BeanPostProcessor，可以在初始化方法(init-method)调用前后回调对应方法
  */
 public class ApplicationContextAwareProcessor implements BeanPostProcessor {
 
@@ -54,24 +55,28 @@ public class ApplicationContextAwareProcessor implements BeanPostProcessor {
 	}
 
 	public Object postProcessBeforeInitialization(Object bean, String name) throws BeansException {
+		//ResourceLoaderAware
 		if (bean instanceof ResourceLoaderAware) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Invoking setResourceLoader on ResourceLoaderAware bean '" + name + "'");
 			}
 			((ResourceLoaderAware) bean).setResourceLoader(this.applicationContext);
 		}
+		//ApplicationEventPublisherAware
 		if (bean instanceof ApplicationEventPublisherAware) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Invoking setApplicationEventPublisher on ApplicationEventPublisherAware bean '" + name + "'");
 			}
 			((ApplicationEventPublisherAware) bean).setApplicationEventPublisher(this.applicationContext);
 		}
+		//MessageSourceAware
 		if (bean instanceof MessageSourceAware) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Invoking setMessageSource on MessageSourceAware bean '" + name + "'");
 			}
 			((MessageSourceAware) bean).setMessageSource(this.applicationContext);
 		}
+		//ApplicationContextAware
 		if (bean instanceof ApplicationContextAware) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Invoking setApplicationContext on ApplicationContextAware bean '" + name + "'");

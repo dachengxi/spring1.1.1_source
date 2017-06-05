@@ -225,16 +225,26 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	// Implementation of ConfigurableListableBeanFactory
 	//---------------------------------------------------------------------
 
+	/**
+	 * 预实例化单例，确保所有的非懒初始化的单例都被初始化
+	 * @throws BeansException
+	 */
 	public void preInstantiateSingletons() throws BeansException {
 		if (logger.isInfoEnabled()) {
 			logger.info("Pre-instantiating singletons in factory [" + this + "]");
 		}
 		try {
+			//遍历所有的BeanDefinition的名字
 			for (Iterator it = this.beanDefinitionNames.iterator(); it.hasNext();) {
+				//bean的名字
 				String beanName = (String) it.next();
+				//包含bean
 				if (containsBeanDefinition(beanName)) {
+					//获得Bean
 					RootBeanDefinition bd = getMergedBeanDefinition(beanName, false);
+					//有class，不是抽象，是单例，不是懒加载的Bean
 					if (bd.hasBeanClass() && !bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+						//工厂Bean，需要加前缀获取实例
 						if (FactoryBean.class.isAssignableFrom(bd.getBeanClass())) {
 							FactoryBean factory = (FactoryBean) getBean(FACTORY_BEAN_PREFIX + beanName);
 							if (factory.isSingleton()) {
@@ -242,6 +252,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 							}
 						}
 						else {
+							//普通Bean直接获取实例
 							getBean(beanName);
 						}
 					}

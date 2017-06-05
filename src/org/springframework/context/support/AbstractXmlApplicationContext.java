@@ -55,12 +55,20 @@ public abstract class AbstractXmlApplicationContext extends AbstractApplicationC
 		super(parent);
 	}
 
+	/**
+	 * 刷新bean工厂,用来执行真正的加载配置
+	 * @throws BeansException
+	 */
 	protected final void refreshBeanFactory() throws BeansException {
 		try {
+			//创建BeanFactory
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
+			//实例化一个XmlBeanDefinitionReader，用来从xml中读取、解析、注册BeanDefinition
 			XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 			beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
+			//初始化BeanDefinitionReader，默认实现为空
 			initBeanDefinitionReader(beanDefinitionReader);
+			//使用给定的XmlBeanDefinitionReader来加载BeanDefinition
 			loadBeanDefinitions(beanDefinitionReader);
 			this.beanFactory = beanFactory;
 			if (logger.isInfoEnabled()) {
@@ -113,14 +121,18 @@ public abstract class AbstractXmlApplicationContext extends AbstractApplicationC
 	 * @see #refreshBeanFactory
 	 * @see #getConfigLocations
 	 * @see #getResourcePatternResolver
+	 * 加载BeanDefinition
 	 */
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
+		//获取配置文件路径，子类来实现
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
 			ResourcePatternResolver resourcePatternResolver = getResourcePatternResolver();
 			for (int i = 0; i < configLocations.length; i++) {
+				//获取Resource
 				Resource[] configResources = resourcePatternResolver.getResources(configLocations[i]);
 				for (int j = 0; j < configResources.length; j++) {
+					//使用XmlBeanDefinitionReader来解析配置文件
 					reader.loadBeanDefinitions(configResources[j]);
 				}
 			}

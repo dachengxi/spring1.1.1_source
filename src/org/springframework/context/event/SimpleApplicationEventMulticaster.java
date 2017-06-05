@@ -43,6 +43,7 @@ import org.springframework.context.ApplicationListener;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
+ * 默认广播器实现
  */
 public class SimpleApplicationEventMulticaster implements ApplicationEventMulticaster {
 
@@ -61,7 +62,12 @@ public class SimpleApplicationEventMulticaster implements ApplicationEventMultic
 		this.applicationListeners.clear();
 	}
 
+	/**
+	 * 广播事件
+	 * @param event the event to multicast
+	 */
 	public void multicastEvent(ApplicationEvent event) {
+		//遍历所有的监听器，使用监听器的onApplicationEvent方法来进行监听器的处理
 		Iterator it = this.applicationListeners.iterator();
 		while (it.hasNext()) {
 			ApplicationListener listener = (ApplicationListener) it.next();

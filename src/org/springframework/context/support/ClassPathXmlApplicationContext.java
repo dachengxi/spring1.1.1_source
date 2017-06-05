@@ -44,13 +44,14 @@ import org.springframework.context.ApplicationContext;
  * @see #getResourceByPath
  */
 public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContext {
-
+	//配置的路径
 	private String[] configLocations;
 
 	/**
 	 * Create a new ClassPathXmlApplicationContext, loading the definitions
 	 * from the given XML file and automatically refreshing the context.
 	 * @param configLocation file path
+	 * 指定配置路径
 	 */
 	public ClassPathXmlApplicationContext(String configLocation) throws BeansException {
 		this(new String[] {configLocation});
@@ -60,6 +61,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * Create a new ClassPathXmlApplicationContext, loading the definitions
 	 * from the given XML files and automatically refreshing the context.
 	 * @param configLocations array of file paths
+	 * 指定多个配置路径
 	 */
 	public ClassPathXmlApplicationContext(String[] configLocations) throws BeansException {
 		this(configLocations, true);
@@ -73,9 +75,11 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * loading all bean definitions and creating all singletons.
 	 * Alternatively, call refresh manually after further configuring the context.
 	 * @see #refresh
+	 * 指定多个路径，并指定是否需要刷新上下文
 	 */
 	public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh) throws BeansException {
 		this.configLocations = configLocations;
+		//需要刷新上下文
 		if (refresh) {
 			refresh();
 		}
@@ -87,6 +91,7 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * refreshing the context.
 	 * @param configLocations array of file paths
 	 * @param parent the parent context
+	 * 指定路径和父上下文
 	 */
 	public ClassPathXmlApplicationContext(String[] configLocations, ApplicationContext parent)
 			throws BeansException {
@@ -102,11 +107,13 @@ public class ClassPathXmlApplicationContext extends AbstractXmlApplicationContex
 	 * Alternatively, call refresh manually after further configuring the context.
 	 * @param parent the parent context
 	 * @see #refresh
+	 * 指定路径，是否刷新，父上下文
 	 */
 	public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh, ApplicationContext parent)
 			throws BeansException {
 		super(parent);
 		this.configLocations = configLocations;
+		//刷新
 		if (refresh) {
 			refresh();
 		}
