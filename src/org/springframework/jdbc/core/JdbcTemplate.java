@@ -314,8 +314,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 	//-------------------------------------------------------------------------
 	// Methods dealing with prepared statements
 	//-------------------------------------------------------------------------
-
+	//execute作为数据库操作的核心入口，将大多数数据库操作相同的步骤统一封装，而将个性化的操作使用参数PreparedStatementCallback进行回调
 	public Object execute(PreparedStatementCreator psc, PreparedStatementCallback action) {
+		//获取数据库连接
 		Connection con = DataSourceUtils.getConnection(getDataSource());
 		PreparedStatement ps = null;
 		try {
@@ -330,8 +331,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 			if (this.nativeJdbcExtractor != null) {
 				psToUse = this.nativeJdbcExtractor.getNativePreparedStatement(ps);
 			}
+			//调用回调函数
 			Object result = action.doInPreparedStatement(psToUse);
 			SQLWarning warning = ps.getWarnings();
+			//如果不忽略警告，就抛警告异常，如果忽略就只打印日志
 			throwExceptionOnWarningIfNotIgnoringWarnings(warning);
 			return result;
 		}
@@ -339,7 +342,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 			throw getExceptionTranslator().translate("executing PreparedStatementCallback [" + psc + "]",
 																							 getSql(psc), ex);
 		}
-		finally {
+		finally {//资源释放
 			if (psc instanceof ParameterDisposer) {
 				((ParameterDisposer) psc).cleanupParameters();
 			}
@@ -386,6 +389,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 					if (nativeJdbcExtractor != null) {
 						rsToUse = nativeJdbcExtractor.getNativeResultSet(rs);
 					}
+					//将结果封装并转换为pojo
 					return rse.extractData(rsToUse);
 				}
 				finally {
@@ -411,6 +415,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 	}
 
 	public Object query(String sql, Object[] args, int[] argTypes, ResultSetExtractor rse) {
+		//ArgTypePreparedStatementSetter封装参数和参数类型
 		return query(sql, new ArgTypePreparedStatementSetter(args, argTypes), rse);
 	}
 
@@ -491,6 +496,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 			public Object doInPreparedStatement(PreparedStatement ps) throws SQLException {
 				try {
 					if (pss != null) {
+						//设置PreparedStatement所需的全部参数
 						pss.setValues(ps);
 					}
 					int rows = ps.executeUpdate();
@@ -539,10 +545,20 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 	}
 
 	public int update(String sql, final PreparedStatementSetter pss) throws DataAccessException {
+		//使用SimplePreparedStatementCreator对sql进行封装
 		return update(new SimplePreparedStatementCreator(sql), pss);
 	}
 
+	/**
+	 *
+	 * @param sql SQL, containing bind parameters sql语句
+	 * @param args arguments to bind to the query 参数
+	 * @param argTypes SQL types of the arguments (constants from java.sql.Types) 参数类型
+	 * @return
+	 * @throws DataAccessException
+	 */
 	public int update(String sql, final Object[] args, final int[] argTypes) throws DataAccessException {
+		//先把参数和参数类型封装到ArgTypePreparedStatementSetter中
 		return update(sql, new ArgTypePreparedStatementSetter(args, argTypes));
 	}
 
@@ -908,6 +924,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations, Initia
 
 		public void setValues(PreparedStatement ps) throws SQLException {
 			if (this.args != null) {
+				//遍历每个参数和类型，做匹配以及转换
 				for (int i = 0; i < this.args.length; i++) {
 					StatementCreatorUtils.setParameterValue(ps, i + 1, this.argTypes[i], null, this.args[i]);
 				}

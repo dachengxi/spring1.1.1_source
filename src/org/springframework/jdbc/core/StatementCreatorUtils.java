@@ -83,7 +83,7 @@ public class StatementCreatorUtils {
 					"', valueClass=" + (inValue != null ? inValue.getClass().getName() : "null") +
 					", sqlType=" + (sqlType == SqlTypeValue.TYPE_UNKNOWN ? "unknown" : Integer.toString(sqlType)));
 		}
-
+		//设置的值为null
 		if (inValue == null) {
 			if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
 				// possible alternative: ps.setNull(paramIndex, Types.NULL);
@@ -96,7 +96,7 @@ public class StatementCreatorUtils {
 				ps.setNull(paramIndex, sqlType);
 			}
 		}
-
+		//设置的值不为null，以下是各种类型的判断和设置value
 		else {  // inValue != null
 			if (inValue instanceof SqlTypeValue) {
 				((SqlTypeValue) inValue).setTypeValue(ps, paramIndex, sqlType, typeName);

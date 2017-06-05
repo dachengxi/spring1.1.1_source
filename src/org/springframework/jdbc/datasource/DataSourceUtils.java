@@ -123,6 +123,7 @@ public abstract class DataSourceUtils {
 	 * if the attempt to get a Connection failed
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager
 	 * @see DataSourceTransactionManager
+	 * 获取数据库连接
 	 */
 	public static Connection getConnection(DataSource ds) throws CannotGetJdbcConnectionException {
 		return getConnection(ds, true);
@@ -145,10 +146,12 @@ public abstract class DataSourceUtils {
 	 * @see #doGetConnection
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager
 	 * @see DataSourceTransactionManager
+	 * 获取数据库连接
 	 */
 	public static Connection getConnection(DataSource ds, boolean allowSynchronization)
 	    throws CannotGetJdbcConnectionException {
 		try {
+			//获取数据库连接
 			return doGetConnection(ds, allowSynchronization);
 		}
 		catch (SQLException ex) {
@@ -163,6 +166,7 @@ public abstract class DataSourceUtils {
 	 * @throws SQLException if thrown by JDBC methods
 	 * @see #getConnection(DataSource, boolean)
 	 * @see TransactionAwareDataSourceProxy
+	 * 获取数据库连接
 	 */
 	protected static Connection doGetConnection(DataSource ds, boolean allowSynchronization)
 			throws SQLException {
@@ -171,10 +175,12 @@ public abstract class DataSourceUtils {
 			return conHolder.getConnection();
 		}
 		Connection con = ds.getConnection();
+		//当前线程支持事务
 		if (allowSynchronization && TransactionSynchronizationManager.isSynchronizationActive()) {
 			logger.debug("Registering transaction synchronization for JDBC connection");
 			// use same Connection for further JDBC actions within the transaction
 			// thread object will get removed by synchronization at transaction completion
+			//事务中使用同一数据库连接
 			conHolder = new ConnectionHolder(con);
 			TransactionSynchronizationManager.bindResource(ds, conHolder);
 			TransactionSynchronizationManager.registerSynchronization(new ConnectionSynchronization(conHolder, ds));
