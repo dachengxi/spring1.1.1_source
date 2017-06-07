@@ -80,16 +80,22 @@ public abstract class HttpServletBean extends HttpServlet {
 	 * invoke subclass initialization.
 	 * @throws ServletException if bean properties are invalid (or required
 	 * properties are missing), or if subclass initialization fails.
+	 * 主要过程是将当前的Servlet类型实例转化为BeanWrapper实例，以便使用Spring中提供的注入功能进行对应属性的注入
 	 */
 	public final void init() throws ServletException {
 		logger.info("Initializing servlet '" + getServletName() + "'");
 
 		// set bean properties
 		try {
+			//解析init-param封装进pvs中
 			PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
+			//将当前的Servlet转化为一个BeanWrapper，从而能够以Spring的方式来对init-param的值进行注入
 			BeanWrapper bw = new BeanWrapperImpl(this);
+			//ServletContextResourceLoader
 			ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
+			//注册自定义属性编辑器，一旦遇到Resource类型的的属性就使用ResourceEditor进行解析
 			bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader));
+			//初始化方法，留给子类实现
 			initBeanWrapper(bw);
 			bw.setPropertyValues(pvs);
 		}
@@ -99,6 +105,7 @@ public abstract class HttpServletBean extends HttpServlet {
 		}
 
 		// let subclasses do whatever initialization they like
+		//初始化ServletBean
 		initServletBean();
 		logger.info("Servlet '" + getServletName() + "' configured successfully");
 	}
@@ -134,11 +141,12 @@ public abstract class HttpServletBean extends HttpServlet {
 		 * @param requiredProperties set of property names we need, where
 		 * we can't accept default values
 		 * @throws ServletException if any required properties are missing
+		 * 封装验证初始化参数
 		 */
 		private ServletConfigPropertyValues(ServletConfig config, Set requiredProperties) throws ServletException {
 			Set missingProps = (requiredProperties != null && !requiredProperties.isEmpty()) ?
 					new HashSet(requiredProperties) : null;
-
+			//初始化参数是Servlet中配置的<init-param>中配置的
 			Enumeration enum = config.getInitParameterNames();
 			while (enum.hasMoreElements()) {
 				String property = (String) enum.nextElement();

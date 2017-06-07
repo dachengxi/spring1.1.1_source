@@ -32,6 +32,7 @@ import org.springframework.web.servlet.LocaleResolver;
  *
  * @author Juergen Hoeller
  * @since 27.02.2003
+ * 国际化，基于URL参数的配置
  */
 public class AcceptHeaderLocaleResolver implements LocaleResolver {
 

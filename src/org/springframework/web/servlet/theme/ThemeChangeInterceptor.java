@@ -30,6 +30,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  * @author Juergen Hoeller
  * @since 20.06.2003
  * @see org.springframework.web.servlet.ThemeResolver
+ * 拦截器，用来根据用户请求改变主题
  */
 public class ThemeChangeInterceptor extends HandlerInterceptorAdapter {
 

@@ -189,6 +189,8 @@ public abstract class FrameworkServlet extends HttpServletBean {
 	/**
 	 * Overridden method of HttpServletBean, invoked after any bean properties
 	 * have been set. Creates this servlet's WebApplicationContext.
+	 * 初始化ServletBean
+	 * ContextLoaderListener加载的时候已经创建了WebApplicationContext实例，这里会进一步补充初始化
 	 */
 	protected final void initServletBean() throws ServletException, BeansException {
 		long startTime = System.currentTimeMillis();
@@ -197,7 +199,9 @@ public abstract class FrameworkServlet extends HttpServletBean {
 		}
 
 		try {
+			//初始化Web应用上下文
 			this.webApplicationContext = initWebApplicationContext();
+			//属性设置之后和WebApplicationContext加载之后调用，子类实现
 			initFrameworkServlet();
 		}
 		catch (ServletException ex) {
@@ -221,12 +225,15 @@ public abstract class FrameworkServlet extends HttpServletBean {
 	 * Can be overridden in subclasses.
 	 * @throws BeansException if the context couldn't be initialized
 	 * @see #createWebApplicationContext
+	 * 实例化和发布WebApplicationContext
 	 */
 	protected WebApplicationContext initWebApplicationContext() throws BeansException {
 		getServletContext().log("Initializing WebApplicationContext for servlet '" + getServletName() + "'");
+		//获取Servlet上下文
 		ServletContext servletContext = getServletContext();
+		//rootContext
 		WebApplicationContext parent = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-
+		//创建web应用上下文
 		WebApplicationContext wac = createWebApplicationContext(parent);
 		if (logger.isInfoEnabled()) {
 			logger.info("Using context class '" + wac.getClass().getName() + "' for servlet '" + getServletName() + "'");
@@ -252,6 +259,7 @@ public abstract class FrameworkServlet extends HttpServletBean {
 	 * @throws BeansException if the context couldn't be initialized
 	 * @see #setContextClass
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext
+	 * 创建web应用上下文
 	 */
 	protected WebApplicationContext createWebApplicationContext(WebApplicationContext parent)
 			throws BeansException {
@@ -267,7 +275,7 @@ public abstract class FrameworkServlet extends HttpServletBean {
 																						getContextClass().getName() +
 																						"] is not of type ConfigurableWebApplicationContext");
 		}
-
+		//实例化contextClass
 		ConfigurableWebApplicationContext wac =
 				(ConfigurableWebApplicationContext) BeanUtils.instantiateClass(getContextClass());
 		wac.setParent(parent);
@@ -279,6 +287,7 @@ public abstract class FrameworkServlet extends HttpServletBean {
 			                                      ConfigurableWebApplicationContext.CONFIG_LOCATION_DELIMITERS,
 			                                      true, true));
 		}
+		//上下文刷新
 		wac.refresh();
 		return wac;
 	}

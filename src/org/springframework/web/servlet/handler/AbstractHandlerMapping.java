@@ -90,20 +90,26 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @param request current HTTP request
 	 * @return the looked up handler instance, or the default handler
 	 * @see #getHandlerInternal
+	 * 根据request信息获取Handler
 	 */
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+		//根据request信息获取Handler
 		Object handler = getHandlerInternal(request);
+		//没有找到，就使用默认的Handler
 		if (handler == null) {
 			handler = this.defaultHandler;
 		}
+		//默认的也没有，返回null
 		if (handler == null) {
 			return null;
 		}
 		// bean name of resolved handler?
+		//handler是字符串，表示返回的bean名称，需要根据名称查找bean
 		if (handler instanceof String) {
 			String handlerName = (String) handler;
 			handler = getApplicationContext().getBean(handlerName);
 		}
+		//将handler和拦截器封装成一个执行链
 		return new HandlerExecutionChain(handler, this.interceptors);
 	}
 

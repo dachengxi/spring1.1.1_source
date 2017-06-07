@@ -109,6 +109,13 @@ public abstract class AbstractController extends WebContentGenerator implements 
 		return synchronizeOnSession;
 	}
 
+	/**
+	 * 处理请求
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return
+	 * @throws Exception
+	 */
 	public final ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 
@@ -124,7 +131,7 @@ public abstract class AbstractController extends WebContentGenerator implements 
 				}
 			}
 		}
-		
+		//调用我们实现的Controller中的方法
 		return handleRequestInternal(request, response);
 	}
 

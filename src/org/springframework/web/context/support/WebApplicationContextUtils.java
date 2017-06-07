@@ -48,6 +48,7 @@ public abstract class WebApplicationContextUtils {
 	 * @param sc ServletContext to find the web application context for
 	 * @return the root WebApplicationContext for this web app, or null if none
 	 * @see org.springframework.web.context.WebApplicationContext#ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE
+	 * 获取根web应用上下文
 	 */
 	public static WebApplicationContext getWebApplicationContext(ServletContext sc) {
 		Object attr = sc.getAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);

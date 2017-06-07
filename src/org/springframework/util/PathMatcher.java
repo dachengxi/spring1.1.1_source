@@ -83,6 +83,7 @@ public abstract class PathMatcher {
 		int strIdxEnd = strDirs.size() - 1;
 
 		// match all elements up to the first **
+		//以**开头
 		while (patIdxStart <= patIdxEnd && strIdxStart <= strIdxEnd) {
 			String patDir = (String) patDirs.get(patIdxStart);
 			if (patDir.equals("**")) {
@@ -112,6 +113,7 @@ public abstract class PathMatcher {
 		}
 
 		// up to last '**'
+		//以**结尾
 		while (patIdxStart <= patIdxEnd && strIdxStart <= strIdxEnd) {
 			String patDir = (String) patDirs.get(patIdxEnd);
 			if (patDir.equals("**")) {

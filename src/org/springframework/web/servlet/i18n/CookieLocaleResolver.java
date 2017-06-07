@@ -38,6 +38,7 @@ import org.springframework.web.util.WebUtils;
  * @author Jean-Pierre Pawlak
  * @since 27.02.2003
  * @see #setLocale
+ * 国际化，基于Cookie的配置
  */
 public class CookieLocaleResolver implements LocaleResolver {
 

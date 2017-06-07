@@ -227,6 +227,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 		}
 
 		// consolidate static and dynamic model attributes
+		//model
 		Map mergedModel = new HashMap(this.staticAttributes.size() + (model != null ? model.size() : 0));
 		mergedModel.putAll(this.staticAttributes);
 		if (model != null) {
@@ -237,7 +238,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 		if (this.requestContextAttribute != null) {
 			mergedModel.put(this.requestContextAttribute, createRequestContext(request, mergedModel));
 		}
-
+		//渲染数据，具体的视图解析器实现
 		renderMergedOutputModel(mergedModel, request, response);
 	}
 

@@ -35,7 +35,13 @@ import javax.servlet.ServletContextListener;
  * @see ContextLoader
  * @see ContextLoaderServlet
  * @see org.springframework.web.util.Log4jConfigListener
+ * 启动web服务器的时候，用ContextLoaderListener来装配ApplicationContext的配置信息
+ * 实现了ServletContextListener，容器启动时会执行方法
  * Servlet2.2和Servlet2.3不支持在Servlet实例化之前实例化Listener，所以ContextLoaderListener适合用在Servlet2.4之后
+ *
+ * 核心逻辑就是创建一个WebApplicationContext实例，存放在ServletContext中
+ *
+ * 载入配置文件，载入除了DispatcherServlet已经载入过的其他的配置文件
  */
 public class ContextLoaderListener implements ServletContextListener {
 	//上下文加载器
@@ -44,6 +50,7 @@ public class ContextLoaderListener implements ServletContextListener {
 	/**
 	 * Initialize the root web application context.
 	 * 初始化web应用上下文
+	 * ServletContext启动之后被调用
 	 */
 	public void contextInitialized(ServletContextEvent event) {
 		//创建一个上下文加载器

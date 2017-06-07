@@ -38,7 +38,18 @@ public class SimpleControllerHandlerAdapter implements HandlerAdapter {
 	public boolean supports(Object handler) {
 		return (handler instanceof Controller);
 	}
-	
+
+	/**
+	 * 执行Handler
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @param handler handler to use. This object must have previously been passed
+	 * to the supports() method of this interface, which must have returned true.
+	 * Implementations that generate output themselves (and return null
+	 * from this method) may encounter IOExceptions.
+	 * @return
+	 * @throws Exception
+	 */
 	public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		return ((Controller) handler).handleRequest(request, response);

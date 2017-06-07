@@ -41,6 +41,7 @@ import org.springframework.ui.context.ThemeSource;
  * @author Juergen Hoeller
  * @since January 19, 2001
  * @see ServletContextAware#setServletContext
+ * 继承了ApplicationContext，增加了特定于Web的操作以及属性
  */
 public interface WebApplicationContext extends ApplicationContext, ThemeSource {
 

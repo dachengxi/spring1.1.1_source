@@ -34,6 +34,7 @@ import org.springframework.web.util.WebUtils;
  * @author Juergen Hoeller
  * @since 17.06.2003
  * @see #setThemeName
+ * 用于实现用户所选主题，以cookie的形式存放在客户端的机器上
  */
 public class CookieThemeResolver extends AbstractThemeResolver {
 

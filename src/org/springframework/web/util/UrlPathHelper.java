@@ -119,6 +119,7 @@ public class UrlPathHelper {
 	 * @return the lookup path
 	 * @see #getPathWithinApplication
 	 * @see #getPathWithinServletMapping
+	 * //截取用于匹配的url的有路径
 	 */
 	public String getLookupPathForRequest(HttpServletRequest request) {
 		// Always use full path within current servlet context?

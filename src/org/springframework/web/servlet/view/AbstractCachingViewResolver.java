@@ -64,12 +64,21 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 		return cache;
 	}
 
+	/**
+	 * 解析视图名
+	 * @param viewName name of the view to resolve
+	 * @param locale Locale in which to resolve the view.
+	 * ViewResolvers that support internationalization should respect this.
+	 * @return
+	 * @throws Exception
+	 */
 	public View resolveViewName(String viewName, Locale locale) throws Exception {
+		//不存在缓存，直接创建视图
 		if (!this.cache) {
 			logger.warn("View caching is SWITCHED OFF -- DEVELOPMENT SETTING ONLY: This can severely impair performance");
 			return loadAndConfigureView(viewName, locale);
 		}
-		else {
+		else {//从缓存中提取
 			String cacheKey = getCacheKey(viewName, locale);
 			// no synchronization, as we can live with occasional double caching
 			View view = (View) this.viewMap.get(cacheKey);
@@ -116,9 +125,12 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 	 * Delegates to the loadView template method for actual loading.
 	 * <p>Sets the ApplicationContext on the View if necessary.
 	 * @see #loadView
+	 * 加载配置View
 	 */
 	private View loadAndConfigureView(String viewName, Locale locale) throws Exception {
+		//加载视图
 		View view = loadView(viewName, locale);
+		//设置上下文
 		if (view instanceof ApplicationContextAware) {
 			((ApplicationContextAware) view).setApplicationContext(getApplicationContext());
 		}

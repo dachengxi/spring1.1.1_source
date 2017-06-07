@@ -108,12 +108,15 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	 * Look up a handler for the URL path of the given request.
 	 * @param request current HTTP request
 	 * @return the looked up handler instance, or null
+	 * 根据request信息查找Handler
 	 */
 	protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
+		//截取用于匹配的url的有路径
 		String lookupPath = this.urlPathHelper.getLookupPathForRequest(request);
 		if (logger.isDebugEnabled()) {
 			logger.debug("Looking up handler for [" + lookupPath + "]");
 		}
+		//根据路径查找handler
 		return lookupHandler(lookupPath);
 	}
 
@@ -125,14 +128,18 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping {
 	 * @param urlPath URL the bean is mapped to
 	 * @return the associated handler instance, or null if not found
 	 * @see org.springframework.util.PathMatcher
+	 * 根据路径查找匹配的Handler
 	 */
 	protected Object lookupHandler(String urlPath) {
 		// direct match?
+		//handlerMap缓存中查找
 		Object handler = this.handlerMap.get(urlPath);
+		//缓存中不存在
 		if (handler == null) {
 			// pattern match?
 			for (Iterator it = this.handlerMap.keySet().iterator(); it.hasNext();) {
 				String registeredPath = (String) it.next();
+				//和handlerMap中的进行对比匹配
 				if (PathMatcher.match(registeredPath, urlPath)) {
 					handler = this.handlerMap.get(registeredPath);
 				}

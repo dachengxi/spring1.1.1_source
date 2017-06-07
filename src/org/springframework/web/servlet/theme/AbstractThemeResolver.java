@@ -24,6 +24,7 @@ import org.springframework.web.servlet.ThemeResolver;
  * @author Juergen Hoeller
  * @author Jean-Pierre Pawlak
  * @since 17.06.2003
+ * 主题解析器抽象类
  */
 public abstract class AbstractThemeResolver implements ThemeResolver {
 

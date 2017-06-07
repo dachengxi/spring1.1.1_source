@@ -142,6 +142,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver {
 	protected View loadView(String viewName, Locale locale) throws BeansException {
 		AbstractUrlBasedView view = (AbstractUrlBasedView) BeanUtils.instantiateClass(this.viewClass);
 		view.setBeanName(viewName);
+		//前缀和后缀的处理
 		view.setUrl(this.prefix + viewName + this.suffix);
 		if (this.contentType != null) {
 			view.setContentType(this.contentType);

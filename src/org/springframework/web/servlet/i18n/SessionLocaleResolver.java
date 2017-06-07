@@ -35,6 +35,7 @@ import org.springframework.web.util.WebUtils;
  * @author Juergen Hoeller
  * @since 27.02.2003
  * @see #setLocale
+ * 国际化，基于Session配置
  */
 public class SessionLocaleResolver implements LocaleResolver {
 
