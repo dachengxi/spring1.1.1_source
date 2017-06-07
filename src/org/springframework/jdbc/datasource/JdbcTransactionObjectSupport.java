@@ -105,11 +105,14 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 	/**
 	 * This implementation creates a JDBC 3.0 Savepoint and returns it.
 	 * @see java.sql.Connection#setSavepoint
+	 * 创建savepoint
 	 */
 	public Object createSavepoint() throws TransactionException {
+		//获取Connection
 		Connection con = getConnectionHolderForSavepoint().getConnection();
 		boolean currentDriverSupportsSavepoints = false;
 		try {
+			//是否支持savepoint
 			currentDriverSupportsSavepoints = con.getMetaData().supportsSavepoints();
 		}
 		catch (Throwable t) {
@@ -122,6 +125,7 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 				throw new NestedTransactionNotSupportedException("Cannot create a nested transaction because " +
 						"savepoints are not supported by your JDBC driver");
 			}
+			//设置savepoint，返回SavePoint
 			return con.setSavepoint();
 		}
 		catch (SQLException ex) {
@@ -132,6 +136,7 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 	/**
 	 * This implementation rolls back to the given JDBC 3.0 Savepoint.
 	 * @see java.sql.Connection#rollback(java.sql.Savepoint)
+	 * 回滚到指定的savepoint
 	 */
 	public void rollbackToSavepoint(Object savepoint) throws TransactionException {
 		try {
@@ -145,6 +150,7 @@ public abstract class JdbcTransactionObjectSupport implements SavepointManager, 
 	/**
 	 * This implementation releases the given JDBC 3.0 Savepoint.
 	 * @see java.sql.Connection#releaseSavepoint
+	 * 释放指定的savepoint
 	 */
 	public void releaseSavepoint(Object savepoint) throws TransactionException {
 		try {

@@ -43,9 +43,11 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		// Work out the target class: may be null.
 		// The TransactionAttributeSource should be passed the target class
 		// as well as the method, which may be from an interface
+		//目标类
 		Class targetClass = (invocation.getThis() != null) ? invocation.getThis().getClass() : null;
 		
 		// Create transaction if necessary
+		//如果需要，就创建事务
 		TransactionInfo txInfo = createTransactionIfNecessary(invocation.getMethod(), targetClass);
 
 		Object retVal = null;
@@ -53,16 +55,19 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 			// This is an around advice.
 			// Invoke the next interceptor in the chain.
 			// This will normally result in a target object being invoked.
+			//执行被增强的方法
 			retVal = invocation.proceed();
 		}
 		catch (Throwable ex) {
 			// target invocation exception
+			//异常回滚
 			doCloseTransactionAfterThrowing(txInfo, ex);
 			throw ex;
 		}
 		finally {
 			doFinally(txInfo);
 		}
+		//提交事务
 		doCommitTransactionAfterReturning(txInfo);
 
 		return retVal;

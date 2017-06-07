@@ -43,21 +43,21 @@ import org.springframework.transaction.TransactionUsageException;
  * @see #getTransaction
  */
 public class DefaultTransactionStatus implements TransactionStatus {
-
+	//事务
 	private final Object transaction;
-
+	//新事务
 	private final boolean newTransaction;
-
+	//新同步标志
 	private final boolean newSynchronization;
-
+	//只读
 	private final boolean readOnly;
-
+	//
 	private final boolean debug;
-
+	//挂起的起源
 	private final Object suspendedResources;
-
+	//只回滚
 	private boolean rollbackOnly;
-
+	//savePoint
 	private Object savepoint;
 
 
@@ -174,6 +174,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
 	 * if the underlying transaction does not support savepoints
 	 * @see #getTransaction
 	 * @see org.springframework.transaction.SavepointManager
+	 * 创建savepoint
 	 */
 	public Object createSavepoint() throws TransactionException {
 		return getSavepointManager().createSavepoint();
@@ -184,6 +185,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
 	 * if it implements the SavepointManager interface.
 	 * @see #getTransaction
 	 * @see org.springframework.transaction.SavepointManager
+	 * 回滚到savepoint
 	 */
 	public void rollbackToSavepoint(Object savepoint) throws TransactionException {
 		getSavepointManager().rollbackToSavepoint(savepoint);
@@ -194,6 +196,7 @@ public class DefaultTransactionStatus implements TransactionStatus {
 	 * if it implements the SavepointManager interface.
 	 * @see #getTransaction
 	 * @see org.springframework.transaction.SavepointManager
+	 * 释放savepoint
 	 */
 	public void releaseSavepoint(Object savepoint) throws TransactionException {
 		getSavepointManager().releaseSavepoint(savepoint);

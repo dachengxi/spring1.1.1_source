@@ -60,6 +60,9 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @see org.springframework.aop.framework.ProxyFactoryBean
  * @see TransactionInterceptor
  * @see #setTransactionAttributes
+ * 实现了FactoryBean，是一个FactoryBean
+ *
+ * 实现了InitializingBean接口，允许bean在所有的属性被BeanFactory设置后，执行初始化操作，等同于init-method
  */
 public class TransactionProxyFactoryBean extends ProxyConfig implements FactoryBean, InitializingBean {
 
@@ -186,14 +189,18 @@ public class TransactionProxyFactoryBean extends ProxyConfig implements FactoryB
 		this.advisorAdapterRegistry = advisorAdapterRegistry;
 	}
 
-
+	/**
+	 * 设置完bean的属性之后，调用此方法
+	 * @throws AopConfigException
+	 */
 	public void afterPropertiesSet() throws AopConfigException {
+		//主要检查transactionManager和transactionAttributeSource是否存在
 		this.transactionInterceptor.afterPropertiesSet();
-
+		//target必须存在
 		if (this.target == null) {
 			throw new IllegalArgumentException("'target' is required");
 		}
-		
+		//实例化一个代理工厂
 		ProxyFactory proxyFactory = new ProxyFactory();
 
 		if (this.preInterceptors != null) {
@@ -251,7 +258,12 @@ public class TransactionProxyFactoryBean extends ProxyConfig implements FactoryB
 		}
 	}
 
+	/**
+	 * getBean的时候会调用此方法，直接返回代理
+	 * @return
+	 */
 	public Object getObject() {
+		//此代理在afterProperties方法中初始化
 		return this.proxy;
 	}
 

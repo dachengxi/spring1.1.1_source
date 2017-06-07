@@ -186,21 +186,24 @@ public class TransactionAspectSupport implements InitializingBean, Serializable 
 	 * @return a TransactionInfo object, whether or not a transaction was created.
 	 * The hasTransaction() method on TransactionInfo can be used to tell if there
 	 * was a transaction created.
+	 * 如果有需要，就创建事务
 	 */
 	protected TransactionInfo createTransactionIfNecessary(Method method, Class targetClass) {
 		// If the transaction attribute is null, the method is non-transactional
+		//获取对应的事务属性
 		TransactionAttribute transAtt = this.transactionAttributeSource.getTransactionAttribute(method, targetClass);
 		TransactionInfo txInfo = new TransactionInfo(transAtt, method);
-		if (transAtt != null) {
+		if (transAtt != null) {//需要创建事务
 			// We need a transaction for this method
 			if (logger.isDebugEnabled()) {
 				logger.debug("Getting transaction for " + txInfo.joinpointIdentification());
 			}
 
 			// The transaction manager will flag an error if an incompatible tx already exists
+			//先获取transactionStatus，然后设置一个新的transactionStatus
 			txInfo.newTransactionStatus(this.transactionManager.getTransaction(transAtt));
 		}
-		else {
+		else {//不需要创建事务
 			// The TransactionInfo.hasTransaction() method will return
 			// false. We created it only to preserve the integrity of
 			// the ThreadLocal stack maintained in this class.
