@@ -534,10 +534,12 @@ public class JmsTemplate implements JmsOperations, InitializingBean {
 				sessionToUse = conHolder.getSession();
 			}
 			else {
+				//创建connection
 				con = createConnection();
 				if (startConnection) {
 					con.start();
 				}
+				//创建session
 				session = createSession(con);
 				conToUse = con;
 				sessionToUse = session;
@@ -545,6 +547,7 @@ public class JmsTemplate implements JmsOperations, InitializingBean {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Executing callback on JMS session [" + sessionToUse + "] from connection [" + conToUse + "]");
 			}
+			//调用回调函数
 			return action.doInJms(sessionToUse);
 		}
 		catch (JMSException ex) {
